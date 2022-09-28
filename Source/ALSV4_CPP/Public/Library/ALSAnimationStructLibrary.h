@@ -7,6 +7,7 @@
 #include "CoreMinimal.h"
 #include "Runtime/Engine/Classes/Animation/AnimSequenceBase.h"
 #include "ALSCharacterEnumLibrary.h"
+#include "GameplayTagContainer.h"
 
 
 #include "ALSAnimationStructLibrary.generated.h"
@@ -130,6 +131,13 @@ struct FALSAnimCharacterInformation
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Character Information")
 	EALSViewMode ViewMode = EALSViewMode::ThirdPerson;
+
+	/**角色速度方向和角色方向的Z轴偏移*/
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Character Information")
+	float VelocityAngle;
+	/**角色控制方向和角色方向的Z轴偏移*/
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Character Information")
+	float ControlAngle;
 };
 
 USTRUCT(BlueprintType)
@@ -391,6 +399,24 @@ struct FALSAnimTurnInPlace
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|Turn In Place")
 	float MaxAngleDelay = 0.75f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place")
+	bool ScaleTurnAngle = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place")
+	float PlayRateScale = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place")
+	FName SlotName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place")
+	FGameplayTagContainer ForbidTags;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place")
+	float BlendInTime = 0.2f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn In Place")
+	float BlendOutTime = 0.2f;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|Turn In Place")
 	FALSTurnInPlaceAsset N_TurnIP_L90;

@@ -23,11 +23,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "ALS|HeldObject")
 	void UpdateHeldObject();
 
-	UFUNCTION(BlueprintCallable, Category = "ALS|HeldObject")
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent, Category = "ALS|HeldObject")
 	void ClearHeldObject();
+	virtual void ClearHeldObject_Implementation();
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|HeldObject")
-	void AttachToHand(UStaticMesh* NewStaticMesh, USkeletalMesh* NewSkeletalMesh,
+	virtual void AttachToHand(UStaticMesh* NewStaticMesh, USkeletalMesh* NewSkeletalMesh,
 	                  class UClass* NewAnimClass, bool bLeftHand, FVector Offset);
 
 	virtual void RagdollStart() override;

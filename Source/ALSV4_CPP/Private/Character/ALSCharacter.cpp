@@ -23,7 +23,7 @@ AALSCharacter::AALSCharacter(const FObjectInitializer& ObjectInitializer)
 	AIControllerClass = AALSAIController::StaticClass();
 }
 
-void AALSCharacter::ClearHeldObject()
+void AALSCharacter::ClearHeldObject_Implementation()
 {
 	StaticMesh->SetStaticMesh(nullptr);
 	SkeletalMesh->SetSkeletalMesh(nullptr);

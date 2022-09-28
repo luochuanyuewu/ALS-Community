@@ -55,7 +55,11 @@ enum class EALSMovementState : uint8
 	Grounded,
 	InAir,
 	Mantling,
-	Ragdoll
+	Ragdoll,
+	//自定义开始
+	Vaulting UMETA(DisplayName="Vaulting(翻越)"),
+	Riding UMETA(DisplayName = "Riding(骑马)"),
+	Climbing UMETA(DisplayName = "Climbing(攀爬)"),
 };
 
 /**
@@ -76,7 +80,27 @@ enum class EALSOverlayState : uint8
 	Torch,
 	Binoculars,
 	Box,
-	Barrel
+	Barrel,
+	Normal,
+	//自定义开始
+	Normal_Spear,
+	Normal_Flager,
+	Fight_EmptyHand,
+	Fight_Bow,
+	Fight_CrossBow,
+	Fight_Spear,
+	Fight_Spear_Shield,
+	Fight_Short_S,
+	Fight_Short_D,
+	Fight_Short_Shield,
+	Fight_LongAxe_D,
+	H_Normal,
+	H_Normal_Spear,
+	H_Fight_Bow,
+	H_Fight_Short,
+	H_Fight_LongAxe,
+	H_Fight_Spear,
+	H_Fight_CrossBow
 };
 
 /**
@@ -87,7 +111,9 @@ enum class EALSRotationMode : uint8
 {
 	VelocityDirection,
 	LookingDirection,
-	Aiming
+	Aiming,
+	NoRotation
+
 };
 
 /**
@@ -150,7 +176,9 @@ enum class EALSMantleType : uint8
 {
 	HighMantle,
 	LowMantle,
-	FallingCatch
+	FallingCatch,
+	HighVault,
+	LowVault
 };
 
 UENUM(BlueprintType)

@@ -67,7 +67,7 @@ protected:
 
 	/** Only perform a Rotate In Place Check if the character is Aiming or in First Person. */
 	UFUNCTION(BlueprintCallable, Category = "ALS|Grounded")
-	bool CanRotateInPlace() const;
+	virtual bool CanRotateInPlace() const;
 
 	/**
 	 * Only perform a Turn In Place check if the character is looking toward the camera in Third Person,
@@ -75,7 +75,7 @@ protected:
 	 * states of the AnimBP so that the character can only turn while in those states..
 	 */
 	UFUNCTION(BlueprintCallable, Category = "ALS|Grounded")
-	bool CanTurnInPlace() const;
+	virtual bool CanTurnInPlace() const;
 
 	/**
 	 * Only perform a Dynamic Transition check if the "Enable Transition" curve is fully weighted.
@@ -85,7 +85,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "ALS|Grounded")
 	bool CanDynamicTransition() const;
 
-private:
+protected:
 	void PlayDynamicTransitionDelay();
 
 	void OnJumpedDelay();
@@ -94,11 +94,13 @@ private:
 
 	/** Update Values */
 
+	virtual void UpdateCharacterInformation(float DeltaSeconds);
+	
 	void UpdateAimingValues(float DeltaSeconds);
 
 	void UpdateLayerValues();
 
-	void UpdateFootIK(float DeltaSeconds);
+	virtual void UpdateFootIK(float DeltaSeconds);
 
 	void UpdateMovementValues(float DeltaSeconds);
 
@@ -127,7 +129,7 @@ private:
 
 	void RotateInPlaceCheck();
 
-	void TurnInPlaceCheck(float DeltaSeconds);
+	virtual void TurnInPlaceCheck(float DeltaSeconds);
 
 	void DynamicTransitionCheck();
 

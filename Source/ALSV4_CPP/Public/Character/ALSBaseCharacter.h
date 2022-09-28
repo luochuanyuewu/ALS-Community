@@ -54,6 +54,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "ALS|Ragdoll System")
 	UAnimMontage* GetGetUpAnimation(bool bRagdollFaceUpState);
 
+
+	virtual FName GetRagdollBoneName() const;
+	
 	UFUNCTION(BlueprintCallable, Category = "ALS|Ragdoll System")
 	virtual void RagdollStart();
 
@@ -137,7 +140,7 @@ public:
 	/** Landed, Jumped, Rolling, Mantling and Ragdoll*/
 	/** On Landed*/
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void EventOnLanded();
+	virtual void EventOnLanded();
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "ALS|Character States")
 	void Multicast_OnLanded();
@@ -221,16 +224,20 @@ public:
 	bool HasMovementInput() const { return bHasMovementInput; }
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Movement System")
-	FALSMovementSettings GetTargetMovementSettings() const;
+	virtual FALSMovementSettings GetTargetMovementSettings() const;
 
+	/**
+	 *根据旋转模式和态势等数据、对DesiredGait作修正。不出意外返回的都是DesiredGait
+	 */
 	UFUNCTION(BlueprintCallable, Category = "ALS|Movement System")
 	EALSGait GetAllowedGait() const;
 
+	//根据移速拿到实际的步态
 	UFUNCTION(BlueprintCallable, Category = "ALS|Movement System")
 	EALSGait GetActualGait(EALSGait AllowedGait) const;
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Movement System")
-	bool CanSprint() const;
+	virtual bool CanSprint() const;
 
 	/** BP implementable function that called when Breakfall starts */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Movement System")
@@ -347,6 +354,17 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void LookingDirectionAction();
 
+	/** Replicated Essential Information*/
+
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|Essential Information")
+	float EasedMaxAcceleration = 0.0f;
+
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = "ALS|Essential Information")
+	FVector ReplicatedCurrentAcceleration = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = "ALS|Essential Information")
+	FRotator ReplicatedControlRotation = FRotator::ZeroRotator;
+
 protected:
 	/** Ragdoll System */
 
@@ -384,23 +402,23 @@ protected:
 
 	void OnLandFrictionReset();
 
-	void SetEssentialValues(float DeltaTime);
+	virtual void SetEssentialValues(float DeltaTime);
 
 	void UpdateCharacterMovement();
 
-	void UpdateGroundedRotation(float DeltaTime);
+	virtual void UpdateGroundedRotation(float DeltaTime);
 
-	void UpdateInAirRotation(float DeltaTime);
+	virtual void UpdateInAirRotation(float DeltaTime);
 
 	/** Utils */
 
 	void SmoothCharacterRotation(FRotator Target, float TargetInterpSpeed, float ActorInterpSpeed, float DeltaTime);
 
-	float CalculateGroundedRotationRate() const;
+	virtual float CalculateGroundedRotationRate() const;
 
 	void LimitRotation(float AimYawMin, float AimYawMax, float InterpSpeed, float DeltaTime);
 
-	void SetMovementModel();
+	virtual void SetMovementModel();
 
 	void ForceUpdateCharacterState();
 
@@ -461,6 +479,11 @@ protected:
 
 	/** Movement System */
 
+	/** 勾选后直接通过MovementData配置移动,否则通过表. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Character|Movement System")
+	bool bCustomMovementData = true;
+
+	/** 从UEMovementStateSettings表里选择一种运动配置 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ALS|Movement System")
 	FDataTableRowHandle MovementModel;
 
@@ -490,16 +513,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "ALS|Essential Information")
 	float AimYawRate = 0.0f;
 
-	/** Replicated Essential Information*/
 
-	UPROPERTY(BlueprintReadOnly, Category = "ALS|Essential Information")
-	float EasedMaxAcceleration = 0.0f;
-
-	UPROPERTY(BlueprintReadOnly, Replicated, Category = "ALS|Essential Information")
-	FVector ReplicatedCurrentAcceleration = FVector::ZeroVector;
-
-	UPROPERTY(BlueprintReadOnly, Replicated, Category = "ALS|Essential Information")
-	FRotator ReplicatedControlRotation = FRotator::ZeroRotator;
 
 	/** Replicated Skeletal Mesh Information*/
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|Skeletal Mesh", ReplicatedUsing = OnRep_VisibleMesh)
@@ -539,7 +553,7 @@ protected:
 
 	/** Movement System */
 
-	UPROPERTY(BlueprintReadOnly, Category = "ALS|Movement System")
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|Movement System", meta=(EditCondition="bCustomMovementData", EditConditionHides))
 	FALSMovementStateSettings MovementData;
 
 	/** Rotation System */
@@ -594,6 +608,7 @@ protected:
 
 	/* Dedicated server mesh default visibility based anim tick option*/
 	EVisibilityBasedAnimTickOption DefVisBasedTickOp;
+	ECollisionChannel PrevCollisionObjectType;
 
 	bool bPreRagdollURO = false;
 

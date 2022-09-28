@@ -24,24 +24,24 @@ public:
 	UALSMantleComponent();
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Mantle System")
-	bool MantleCheck(const FALSMantleTraceSettings& TraceSettings,
+	virtual bool MantleCheck(const FALSMantleTraceSettings& TraceSettings,
 	                 EDrawDebugTrace::Type DebugType);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Mantle System")
-	void MantleStart(float MantleHeight, const FALSComponentAndTransform& MantleLedgeWS,
+	virtual void MantleStart(float MantleHeight, const FALSComponentAndTransform& MantleLedgeWS,
 	                EALSMantleType MantleType);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Mantle System")
-	void MantleUpdate(float BlendIn);
+	virtual void MantleUpdate(float BlendIn);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Mantle System")
-	void MantleEnd();
+	virtual void MantleEnd();
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Mantle System")
-	void OnOwnerJumpInput();
+	virtual void OnOwnerJumpInput();
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Mantle System")
-	void OnOwnerRagdollStateChanged(bool bRagdollState);
+	virtual void OnOwnerRagdollStateChanged(bool bRagdollState);
 
 	/** Implement on BP to get correct mantle parameter set according to character state */
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "ALS|Mantle System")
@@ -50,6 +50,8 @@ public:
 protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+	virtual void TickV2(float DeltaTime, ELevelTick TickType,FActorComponentTickFunction* ThisTickFunction);
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -106,10 +108,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "ALS|Mantle System")
 	float AcceptableVelocityWhileMantling = 10.0f;
 
-private:
+protected:
 	UPROPERTY()
 	TObjectPtr<AALSBaseCharacter> OwnerCharacter;
 
 	UPROPERTY()
 	TObjectPtr<UALSDebugComponent> ALSDebugComponent = nullptr;
+
+	void BindTimeline(UTimelineComponent* Timeline, FName Update, FName Finished);
+
 };

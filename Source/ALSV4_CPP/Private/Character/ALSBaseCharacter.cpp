@@ -145,6 +145,11 @@ void AALSBaseCharacter::Tick(float DeltaTime)
 	PreviousAimYaw = AimingRotation.Yaw;
 }
 
+FName AALSBaseCharacter::GetRagdollBoneName() const
+{
+	return NAME_Pelvis;
+}
+
 void AALSBaseCharacter::RagdollStart()
 {
 	if (RagdollStateChangedDelegate.IsBound())
@@ -161,7 +166,7 @@ void AALSBaseCharacter::RagdollStart()
 		DefVisBasedTickOp = GetMesh()->VisibilityBasedAnimTickOption;
 		GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	}
-	TargetRagdollLocation = GetMesh()->GetSocketLocation(NAME_Pelvis);
+	TargetRagdollLocation = GetMesh()->GetSocketLocation(GetRagdollBoneName());
 	ServerRagdollPull = 0;
 
 	// Disable URO
@@ -174,9 +179,10 @@ void AALSBaseCharacter::RagdollStart()
 
 	// Step 2: Disable capsule collision and enable mesh physics simulation starting from the pelvis.
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	PrevCollisionObjectType = GetMesh()->GetCollisionObjectType();
 	GetMesh()->SetCollisionObjectType(ECC_PhysicsBody);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	GetMesh()->SetAllBodiesBelowSimulatePhysics(NAME_Pelvis, true, true);
+	GetMesh()->SetAllBodiesBelowSimulatePhysics(GetRagdollBoneName(), true, true);
 
 	// Step 3: Stop any active montages.
 	if (GetMesh()->GetAnimInstance())
@@ -231,7 +237,7 @@ void AALSBaseCharacter::RagdollEnd()
 
 	// Step 3: Re-Enable capsule collision, and disable physics simulation on the mesh.
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	GetMesh()->SetCollisionObjectType(ECC_Pawn);
+	GetMesh()->SetCollisionObjectType(PrevCollisionObjectType);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	GetMesh()->SetAllBodiesSimulatePhysics(false);
 
@@ -679,7 +685,7 @@ void AALSBaseCharacter::SetActorLocationDuringRagdoll(float DeltaTime)
 	if (IsLocallyControlled())
 	{
 		// Set the pelvis as the target location.
-		TargetRagdollLocation = GetMesh()->GetSocketLocation(NAME_Pelvis);
+		TargetRagdollLocation = GetMesh()->GetSocketLocation(GetRagdollBoneName());
 		if (!HasAuthority())
 		{
 			Server_SetMeshLocationDuringRagdoll(TargetRagdollLocation);
@@ -687,7 +693,7 @@ void AALSBaseCharacter::SetActorLocationDuringRagdoll(float DeltaTime)
 	}
 
 	// Determine whether the ragdoll is facing up or down and set the target rotation accordingly.
-	const FRotator PelvisRot = GetMesh()->GetSocketRotation(NAME_Pelvis);
+	const FRotator PelvisRot = GetMesh()->GetSocketRotation(GetRagdollBoneName());
 
 	if (bReversedPelvis) {
 		bRagdollFaceUp = PelvisRot.Roll > 0.0f;
@@ -739,7 +745,7 @@ void AALSBaseCharacter::SetActorLocationDuringRagdoll(float DeltaTime)
 	{
 		ServerRagdollPull = FMath::FInterpTo(ServerRagdollPull, 750.0f, DeltaTime, 0.6f);
 		float RagdollSpeed = FVector(LastRagdollVelocity.X, LastRagdollVelocity.Y, 0).Size();
-		FName RagdollSocketPullName = RagdollSpeed > 300 ? NAME_spine_03 : NAME_pelvis;
+		FName RagdollSocketPullName = RagdollSpeed > 300 ? NAME_spine_03 : GetRagdollBoneName();
 		GetMesh()->AddForce(
 			(TargetRagdollLocation - GetMesh()->GetSocketLocation(RagdollSocketPullName)) * ServerRagdollPull,
 			RagdollSocketPullName, true);

@@ -26,11 +26,11 @@ struct FALSComponentAndTransform
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = "Character Struct Library")
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Character Struct Library")
 	FTransform Transform;
 
-	UPROPERTY(EditAnywhere, Category = "Character Struct Library")
-	TObjectPtr<UPrimitiveComponent> Component = nullptr;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Character Struct Library")
+	TObjectPtr<USceneComponent> Component = nullptr;
 };
 
 USTRUCT(BlueprintType)
@@ -161,6 +161,103 @@ struct FALSMantleTraceSettings
 	UPROPERTY(EditAnywhere, Category = "Mantle System")
 	float DownwardTraceRadius = 0.0f;
 };
+
+
+
+USTRUCT(BlueprintType)
+struct FALSVaultAsset
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	UAnimMontage* AnimMontage = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	UCurveVector* UpCurve = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	UCurveVector* DownCurve = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	FVector UpStartingOffset;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	FVector DownStartingOffset;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	float LowHeight = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	float LowPlayRate = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	float LowStartPosition = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	float HighHeight = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	float HighPlayRate = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Mantle System")
+	float HighStartPosition = 0.0f;
+};
+
+
+USTRUCT(BlueprintType)
+struct FALSVaultParams
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "Vault System")
+	UAnimMontage* AnimMontage = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Vault System")
+	UCurveVector* UpCurve = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Vault System")
+	UCurveVector* DownCurve = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Vault System")
+	float StartingPosition = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Vault System", meta=(ClampMin = 0.1))
+	float PlayRate = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Vault System")
+	FVector UpStartingOffset;
+
+	UPROPERTY(EditAnywhere, Category = "Vault System")
+	FVector DownStartingOffset;
+};
+
+
+USTRUCT(BlueprintType)
+struct FALSClimbParams
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "Climb System")
+	UAnimMontage* TopEnter = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Climb System")
+	UAnimMontage* BottomEnter = nullptr;
+	
+	UPROPERTY(EditAnywhere, Category = "Climb System")
+	UAnimMontage* Climbing = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Climb System", meta=(ClampMin = 0.1))
+	float PlayRate = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Climb System")
+	FName XAlphaCurve;
+	UPROPERTY(EditAnywhere, Category = "Climb System")
+	FName YAlphaCurve;
+	UPROPERTY(EditAnywhere, Category = "Climb System")
+	FName ZAlphaCurve;
+};
+
+
 
 USTRUCT(BlueprintType)
 struct FALSMovementSettings

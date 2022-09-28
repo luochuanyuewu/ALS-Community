@@ -43,14 +43,16 @@ void UALSMantleComponent::BeginPlay()
 			AddTickPrerequisiteActor(OwnerCharacter); // Always tick after owner, so we'll use updated values
 
 			// Bindings
-			FOnTimelineFloat TimelineUpdated;
-			FOnTimelineEvent TimelineFinished;
-			TimelineUpdated.BindUFunction(this, NAME_MantleUpdate);
-			TimelineFinished.BindUFunction(this, NAME_MantleEnd);
-			MantleTimeline->SetTimelineFinishedFunc(TimelineFinished);
-			MantleTimeline->SetLooping(false);
-			MantleTimeline->SetTimelineLengthMode(TL_TimelineLength);
-			MantleTimeline->AddInterpFloat(MantleTimelineCurve, TimelineUpdated);
+			BindTimeline(MantleTimeline, NAME_MantleUpdate, NAME_MantleEnd);
+
+			// FOnTimelineFloat TimelineUpdated;
+			// FOnTimelineEvent TimelineFinished;
+			// TimelineUpdated.BindUFunction(this, NAME_MantleUpdate);
+			// TimelineFinished.BindUFunction(this, NAME_MantleEnd);
+			// MantleTimeline->SetTimelineFinishedFunc(TimelineFinished);
+			// MantleTimeline->SetLooping(false);
+			// MantleTimeline->SetTimelineLengthMode(TL_TimelineLength);
+			// MantleTimeline->AddInterpFloat(MantleTimelineCurve, TimelineUpdated);
 
 			OwnerCharacter->JumpPressedDelegate.AddUniqueDynamic(this, &UALSMantleComponent::OnOwnerJumpInput);
 			OwnerCharacter->RagdollStateChangedDelegate.AddUniqueDynamic(
@@ -59,12 +61,29 @@ void UALSMantleComponent::BeginPlay()
 	}
 }
 
+void UALSMantleComponent::BindTimeline(UTimelineComponent* Timeline, FName Update, FName Finished)
+{
+	FOnTimelineFloat TimelineUpdated;
+	FOnTimelineEvent TimelineFinished;
+	TimelineUpdated.BindUFunction(this, Update);
+	TimelineFinished.BindUFunction(this, Finished);
+	// Bindings
+	Timeline->SetTimelineFinishedFunc(TimelineFinished);
+	Timeline->SetLooping(false);
+	Timeline->SetTimelineLengthMode(TL_TimelineLength);
+	Timeline->AddInterpFloat(MantleTimelineCurve, TimelineUpdated);
+}
+
 
 void UALSMantleComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                         FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	TickV2(DeltaTime,TickType,ThisTickFunction);
+}
 
+void UALSMantleComponent::TickV2(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
 	if (OwnerCharacter && OwnerCharacter->GetMovementState() == EALSMovementState::InAir)
 	{
 		// Perform a mantle check if falling while movement input is pressed.
