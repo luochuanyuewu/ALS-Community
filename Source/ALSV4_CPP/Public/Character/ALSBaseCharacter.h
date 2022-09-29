@@ -20,7 +20,9 @@ class UALSPlayerCameraBehavior;
 enum class EVisibilityBasedAnimTickOption : uint8;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FJumpPressedSignature);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJumpedSignature);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRagdollStateChangedSignature, bool, bRagdollState);
 
 /*
@@ -56,7 +58,7 @@ public:
 
 
 	virtual FName GetRagdollBoneName() const;
-	
+
 	UFUNCTION(BlueprintCallable, Category = "ALS|Ragdoll System")
 	virtual void RagdollStart();
 
@@ -480,12 +482,15 @@ protected:
 	/** Movement System */
 
 	/** 勾选后直接通过MovementData配置移动,否则通过表. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Character|Movement System")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ALS|Movement System")
 	bool bCustomMovementData = true;
 
 	/** 从UEMovementStateSettings表里选择一种运动配置 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ALS|Movement System")
 	FDataTableRowHandle MovementModel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|Movement System", meta=(EditCondition="bCustomMovementData", EditConditionHides))
+	FALSMovementStateSettings MovementData;
 
 	/** Essential Information */
 
@@ -512,7 +517,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "ALS|Essential Information")
 	float AimYawRate = 0.0f;
-
 
 
 	/** Replicated Skeletal Mesh Information*/
@@ -550,11 +554,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
 	int32 OverlayOverrideState = 0;
-
-	/** Movement System */
-
-	UPROPERTY(BlueprintReadOnly, Category = "ALS|Movement System", meta=(EditCondition="bCustomMovementData", EditConditionHides))
-	FALSMovementStateSettings MovementData;
 
 	/** Rotation System */
 
