@@ -94,8 +94,6 @@ protected:
 
 	/** Update Values */
 
-	virtual void UpdateCharacterInformation(float DeltaSeconds);
-	
 	void UpdateAimingValues(float DeltaSeconds);
 
 	void UpdateLayerValues();

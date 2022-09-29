@@ -29,7 +29,13 @@ static const FName NAME_Layering_Arm_R_Add(TEXT("Layering_Arm_R_Add"));
 static const FName NAME_Layering_Arm_R_LS(TEXT("Layering_Arm_R_LS"));
 static const FName NAME_Layering_Hand_L(TEXT("Layering_Hand_L"));
 static const FName NAME_Layering_Hand_R(TEXT("Layering_Hand_R"));
+static const FName NAME_Layering_Head(TEXT("Layering_Head"));
 static const FName NAME_Layering_Head_Add(TEXT("Layering_Head_Add"));
+static const FName NAME_Layering_Legs(TEXT("Layering_Legs"));
+static const FName NAME_Layering_Legs_Add(TEXT("Layering_Legs_Add"));
+static const FName NAME_Layering_Pelvis(TEXT("Layering_Pelvis"));
+static const FName NAME_Layering_Pelvis_Add(TEXT("Layering_Pelvis_Add"));
+static const FName NAME_Layering_Spine(TEXT("Layering_Spine"));
 static const FName NAME_Layering_Spine_Add(TEXT("Layering_Spine_Add"));
 static const FName NAME_Mask_AimOffset(TEXT("Mask_AimOffset"));
 static const FName NAME_Mask_LandPrediction(TEXT("Mask_LandPrediction"));
@@ -71,7 +77,29 @@ void UALSCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 	// Update rest of character information. Others are reflected into anim bp when they're set inside character class
-	UpdateCharacterInformation(DeltaSeconds);
+	CharacterInformation.MovementInputAmount = Character->GetMovementInputAmount();
+	CharacterInformation.bHasMovementInput = Character->HasMovementInput();
+	CharacterInformation.bIsMoving = Character->IsMoving();
+	CharacterInformation.Acceleration = Character->GetAcceleration();
+	CharacterInformation.AimYawRate = Character->GetAimYawRate();
+	CharacterInformation.Speed = Character->GetSpeed();
+	CharacterInformation.Velocity = Character->GetCharacterMovement()->Velocity;
+	CharacterInformation.MovementInput = Character->GetMovementInput();
+	CharacterInformation.AimingRotation = Character->GetAimingRotation();
+	CharacterInformation.CharacterActorRotation = Character->GetActorRotation();
+	CharacterInformation.ViewMode = Character->GetViewMode();
+	CharacterInformation.PrevMovementState = Character->GetPrevMovementState();
+	CharacterInformation.VelocityAngle = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::MakeRotFromX(Character->GetVelocity().GetSafeNormal()), Character->GetActorRotation()).Yaw;
+	CharacterInformation.ControlAngle = UKismetMathLibrary::NormalizedDeltaRotator(Character->ReplicatedControlRotation, Character->GetActorRotation()).Yaw;
+	LayerBlendingValues.OverlayOverrideState = Character->GetOverlayOverrideState();
+
+	MovementState = Character->GetMovementState();
+	MovementAction = Character->GetMovementAction();
+	Stance = Character->GetStance();
+	RotationMode = Character->GetRotationMode();
+	Gait = Character->GetGait();
+	OverlayState = Character->GetOverlayState();
+	GroundedEntryState = Character->GetGroundedEntryState();
 
 
 	UpdateAimingValues(DeltaSeconds);
@@ -207,33 +235,6 @@ void UALSCharacterAnimInstance::OnPivotDelay()
 	Grounded.bPivot = false;
 }
 
-void UALSCharacterAnimInstance::UpdateCharacterInformation(float DeltaSeconds)
-{
-	CharacterInformation.MovementInputAmount = Character->GetMovementInputAmount();
-	CharacterInformation.bHasMovementInput = Character->HasMovementInput();
-	CharacterInformation.bIsMoving = Character->IsMoving();
-	CharacterInformation.Acceleration = Character->GetAcceleration();
-	CharacterInformation.AimYawRate = Character->GetAimYawRate();
-	CharacterInformation.Speed = Character->GetSpeed();
-	CharacterInformation.Velocity = Character->GetCharacterMovement()->Velocity;
-	CharacterInformation.MovementInput = Character->GetMovementInput();
-	CharacterInformation.AimingRotation = Character->GetAimingRotation();
-	CharacterInformation.CharacterActorRotation = Character->GetActorRotation();
-	CharacterInformation.ViewMode = Character->GetViewMode();
-	CharacterInformation.PrevMovementState = Character->GetPrevMovementState();
-	CharacterInformation.VelocityAngle = UKismetMathLibrary::NormalizedDeltaRotator(UKismetMathLibrary::MakeRotFromX(Character->GetVelocity().GetSafeNormal()),Character->GetActorRotation()).Yaw;
-	CharacterInformation.ControlAngle = UKismetMathLibrary::NormalizedDeltaRotator(Character->ReplicatedControlRotation, Character->GetActorRotation()).Yaw;
-	LayerBlendingValues.OverlayOverrideState = Character->GetOverlayOverrideState();
-	
-	MovementState = Character->GetMovementState();
-	MovementAction = Character->GetMovementAction();
-	Stance = Character->GetStance();
-	RotationMode = Character->GetRotationMode();
-	Gait = Character->GetGait();
-	OverlayState = Character->GetOverlayState();
-	GroundedEntryState = Character->GetGroundedEntryState();
-}
-
 void UALSCharacterAnimInstance::UpdateAimingValues(float DeltaSeconds)
 {
 	// Interp the Aiming Rotation value to achieve smooth aiming rotation changes.
@@ -298,9 +299,18 @@ void UALSCharacterAnimInstance::UpdateLayerValues()
 	// Set the Base Pose weights
 	LayerBlendingValues.BasePose_N = GetCurveValue(NAME_BasePose_N);
 	LayerBlendingValues.BasePose_CLF = GetCurveValue(NAME_BasePose_CLF);
+
+	// Set the weights for each body part
+	LayerBlendingValues.Legs = GetCurveValue(NAME_Layering_Legs);
+	LayerBlendingValues.Pelvis = GetCurveValue(NAME_Layering_Pelvis);
+	LayerBlendingValues.Spine = GetCurveValue(NAME_Layering_Spine);
+	LayerBlendingValues.Head = GetCurveValue(NAME_Layering_Head);
+	LayerBlendingValues.Arm_L = GetCurveValue(NAME_Layering_Arm_L);
+	LayerBlendingValues.Arm_R = GetCurveValue(NAME_Layering_Arm_R);
+	
 	// Set the Additive amount weights for each body part
-	// LayerBlendingValues.Legs_Add = GetCurveValue(UUEAnimConst::NAME_Layering_Legs_Add());
-	// LayerBlendingValues.Pelvis_Add = GetCurveValue(UUEAnimConst::NAME_Layering_Pelvis_Add());
+	LayerBlendingValues.Legs_Add = GetCurveValue(NAME_Layering_Legs_Add);
+	LayerBlendingValues.Pelvis_Add = GetCurveValue(NAME_Layering_Pelvis_Add);
 	LayerBlendingValues.Spine_Add = GetCurveValue(NAME_Layering_Spine_Add);
 	LayerBlendingValues.Head_Add = GetCurveValue(NAME_Layering_Head_Add);
 	LayerBlendingValues.Arm_L_Add = GetCurveValue(NAME_Layering_Arm_L_Add);
@@ -581,7 +591,7 @@ void UALSCharacterAnimInstance::TurnInPlaceCheck(float DeltaSeconds)
 		FRotator TurnInPlaceYawRot = CharacterInformation.AimingRotation;
 		TurnInPlaceYawRot.Roll = 0.0f;
 		TurnInPlaceYawRot.Pitch = 0.0f;
-		TurnInPlace(TurnInPlaceYawRot, 1.0f, 0.0f, false);
+		TurnInPlace(TurnInPlaceYawRot, TurnInPlaceValues.PlayRateScale, 0.0f, false);
 	}
 }
 
@@ -922,15 +932,15 @@ void UALSCharacterAnimInstance::TurnInPlace(FRotator TargetRotation, float PlayR
 	}
 
 	// Step 3: If the Target Turn Animation is not playing or set to be overriden, play the turn animation as a dynamic montage.
-	if (!OverrideCurrent && IsPlayingSlotAnimation(TargetTurnAsset.Animation, TurnInPlaceValues.SlotName))
+	if (!OverrideCurrent && IsPlayingSlotAnimation(TargetTurnAsset.Animation, TargetTurnAsset.SlotName))
 	{
 		return;
 	}
-	PlaySlotAnimationAsDynamicMontage(TargetTurnAsset.Animation, TurnInPlaceValues.SlotName, TurnInPlaceValues.BlendInTime, TurnInPlaceValues.BlendOutTime,
+	PlaySlotAnimationAsDynamicMontage(TargetTurnAsset.Animation, TargetTurnAsset.SlotName, TurnInPlaceValues.BlendInTime, TurnInPlaceValues.BlendOutTime,
 	                                  TargetTurnAsset.PlayRate * PlayRateScale, 1, 0.0f, StartTime);
 
 	// Step 4: Scale the rotation amount (gets scaled in AnimGraph) to compensate for turn angle (If Allowed) and play rate.
-	if (TurnInPlaceValues.ScaleTurnAngle)
+	if (TargetTurnAsset.ScaleTurnAngle)
 	{
 		Grounded.RotationScale = (TurnAngle / TargetTurnAsset.AnimatedAngle) * TargetTurnAsset.PlayRate * PlayRateScale;
 	}
