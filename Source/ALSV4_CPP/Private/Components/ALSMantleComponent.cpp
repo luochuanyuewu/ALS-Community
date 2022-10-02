@@ -61,12 +61,36 @@ void UALSMantleComponent::BeginPlay()
 	}
 }
 
+void UALSMantleComponent::TimelineUpdate(float BlendIn)
+{
+	switch (const EALSMovementState MovementState = OwnerCharacter->GetMovementState())
+	{
+	case EALSMovementState::Mantling:
+		MantleUpdate(BlendIn);
+		break;
+	default:
+		break;;
+	}
+}
+
+void UALSMantleComponent::TimelineFinish()
+{
+	switch (const EALSMovementState MovementState = OwnerCharacter->GetMovementState())
+	{
+	case EALSMovementState::Mantling:
+		MantleEnd();
+		break;
+	default:
+		break;
+	}
+}
+
 void UALSMantleComponent::BindTimeline(UTimelineComponent* Timeline, FName Update, FName Finished)
 {
 	FOnTimelineFloat TimelineUpdated;
 	FOnTimelineEvent TimelineFinished;
-	TimelineUpdated.BindUFunction(this, Update);
-	TimelineFinished.BindUFunction(this, Finished);
+	TimelineUpdated.BindDynamic(this, &ThisClass::TimelineUpdate);
+	TimelineFinished.BindDynamic(this, &ThisClass::TimelineFinish);
 	// Bindings
 	Timeline->SetTimelineFinishedFunc(TimelineFinished);
 	Timeline->SetLooping(false);
@@ -79,7 +103,7 @@ void UALSMantleComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                         FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	TickV2(DeltaTime,TickType,ThisTickFunction);
+	TickV2(DeltaTime, TickType, ThisTickFunction);
 }
 
 void UALSMantleComponent::TickV2(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -118,14 +142,14 @@ void UALSMantleComponent::MantleStart(float MantleHeight, const FALSComponentAnd
 	MantleParams.PositionCorrectionCurve = MantleAsset.PositionCorrectionCurve;
 	MantleParams.StartingOffset = MantleAsset.StartingOffset;
 	MantleParams.StartingPosition = FMath::GetMappedRangeValueClamped<float, float>({MantleAsset.LowHeight, MantleAsset.HighHeight},
-	                                                                  {
-		                                                                  MantleAsset.LowStartPosition,
-		                                                                  MantleAsset.HighStartPosition
-	                                                                  },
-	                                                                  MantleHeight);
+	                                                                                {
+		                                                                                MantleAsset.LowStartPosition,
+		                                                                                MantleAsset.HighStartPosition
+	                                                                                },
+	                                                                                MantleHeight);
 	MantleParams.PlayRate = FMath::GetMappedRangeValueClamped<float, float>({MantleAsset.LowHeight, MantleAsset.HighHeight},
-	                                                          {MantleAsset.LowPlayRate, MantleAsset.HighPlayRate},
-	                                                          MantleHeight);
+	                                                                        {MantleAsset.LowPlayRate, MantleAsset.HighPlayRate},
+	                                                                        MantleHeight);
 
 	// Step 2: Convert the world space target to the mantle component's local space for use in moving objects.
 	MantleLedgeLS.Component = MantleLedgeWS.Component;
@@ -162,8 +186,8 @@ void UALSMantleComponent::MantleStart(float MantleHeight, const FALSComponentAnd
 	if (MantleParams.AnimMontage && OwnerCharacter->GetMesh()->GetAnimInstance())
 	{
 		OwnerCharacter->GetMesh()->GetAnimInstance()->Montage_Play(MantleParams.AnimMontage, MantleParams.PlayRate,
-		                                                    EMontagePlayReturnType::MontageLength,
-		                                                    MantleParams.StartingPosition, false);
+		                                                           EMontagePlayReturnType::MontageLength,
+		                                                           MantleParams.StartingPosition, false);
 	}
 }
 
@@ -193,7 +217,7 @@ bool UALSMantleComponent::MantleCheck(const FALSMantleTraceSettings& TraceSettin
 	{
 		const FCollisionShape CapsuleCollisionShape = FCollisionShape::MakeCapsule(TraceSettings.ForwardTraceRadius, HalfHeight);
 		const bool bHit = World->SweepSingleByProfile(HitResult, TraceStart, TraceEnd, FQuat::Identity, MantleObjectDetectionProfile,
-	                                                  CapsuleCollisionShape, Params);
+		                                              CapsuleCollisionShape, Params);
 
 		if (ALSDebugComponent && ALSDebugComponent->GetShowTraces())
 		{
@@ -239,8 +263,8 @@ bool UALSMantleComponent::MantleCheck(const FALSMantleTraceSettings& TraceSettin
 	{
 		const FCollisionShape SphereCollisionShape = FCollisionShape::MakeSphere(TraceSettings.DownwardTraceRadius);
 		const bool bHit = World->SweepSingleByChannel(HitResult, DownwardTraceStart, DownwardTraceEnd, FQuat::Identity,
-	                                                  WalkableSurfaceDetectionChannel, SphereCollisionShape,
-	                                                  Params);
+		                                              WalkableSurfaceDetectionChannel, SphereCollisionShape,
+		                                              Params);
 
 		if (ALSDebugComponent && ALSDebugComponent->GetShowTraces())
 		{

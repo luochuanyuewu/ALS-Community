@@ -25,11 +25,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Mantle System")
 	virtual bool MantleCheck(const FALSMantleTraceSettings& TraceSettings,
-	                 EDrawDebugTrace::Type DebugType);
+	                         EDrawDebugTrace::Type DebugType);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Mantle System")
 	virtual void MantleStart(float MantleHeight, const FALSComponentAndTransform& MantleLedgeWS,
-	                EALSMantleType MantleType);
+	                         EALSMantleType MantleType);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Mantle System")
 	virtual void MantleUpdate(float BlendIn);
@@ -51,7 +51,7 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	virtual void TickV2(float DeltaTime, ELevelTick TickType,FActorComponentTickFunction* ThisTickFunction);
+	virtual void TickV2(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction);
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -64,6 +64,11 @@ protected:
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "ALS|Mantle System")
 	void Multicast_MantleStart(float MantleHeight, const FALSComponentAndTransform& MantleLedgeWS,
 	                           EALSMantleType MantleType);
+
+	UFUNCTION()
+	virtual void TimelineUpdate(float BlendIn);
+	UFUNCTION()
+	virtual void TimelineFinish();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Mantle System")
@@ -116,5 +121,4 @@ protected:
 	TObjectPtr<UALSDebugComponent> ALSDebugComponent = nullptr;
 
 	void BindTimeline(UTimelineComponent* Timeline, FName Update, FName Finished);
-
 };

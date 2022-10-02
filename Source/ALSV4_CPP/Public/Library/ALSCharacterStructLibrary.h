@@ -265,13 +265,13 @@ struct FALSMovementSettings
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
-	float WalkSpeed = 0.0f;
+	float WalkSpeed = 150.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
-	float RunSpeed = 0.0f;
+	float RunSpeed = 300.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
-	float SprintSpeed = 0.0f;
+	float SprintSpeed = 600.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
 	TObjectPtr<UCurveVector> MovementCurve = nullptr;
