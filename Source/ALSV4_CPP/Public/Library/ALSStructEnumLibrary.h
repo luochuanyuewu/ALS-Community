@@ -337,45 +337,6 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "ALS|Character States")
 	bool Barrel_ = false;
 
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Normal_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Normal_Flager_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Normal_Spear_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Fight_EmptyHand_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Fight_Bow_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Fight_CrossBow_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Fight_Spear_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Fight_Spear_Shield_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Fight_Short_S_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Fight_Short_D_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Fight_Short_Shield_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool Fight_LongAxe_D_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool H_Normal_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool H_Fight_Bow_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool H_Normal_Spear_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool H_Fight_Short_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool H_Fight_LongAxe_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool H_Fight_Spear_ = false;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category="Character States")
-	bool H_Fight_CrossBow_ = false;
-
 public:
 	FALSOverlayState()
 	{
@@ -397,27 +358,6 @@ public:
 	const bool& Box() const { return Box_; }
 	const bool& Barrel() const { return Barrel_; }
 
-	//自己项目的
-	const bool& Normal() const { return Normal_; }
-	const bool& Normal_Flager() const { return Normal_Flager_; }
-	const bool& Normal_Spear() const { return Normal_Spear_; }
-	const bool& Fight_EmptyHand() const { return Fight_EmptyHand_; }
-	const bool& Fight_Bow() const { return Fight_Bow_; }
-	const bool& Fight_CrossBow() const { return Fight_CrossBow_; }
-	const bool& Fight_Spear() const { return Fight_Spear_; }
-	const bool& Fight_Spear_Shield() const { return Fight_Spear_Shield_; }
-	const bool& Fight_Short_S() const { return Fight_Short_S_; }
-	const bool& Fight_Short_D() const { return Fight_Short_D_; }
-	const bool& Fight_Short_Shield() const { return Fight_Short_Shield_; }
-	const bool& Fight_LongAxe_D() const { return Fight_LongAxe_D_; }
-	const bool& H_Normal() const { return H_Normal_; }
-	const bool& H_Normal_Spear() const { return H_Normal_Spear_; }
-	const bool& H_Fight_Bow() const { return H_Fight_Bow_; }
-	const bool& H_Fight_Short() const { return H_Fight_Short_; }
-	const bool& H_Fight_LongAxe() const { return H_Fight_LongAxe_; }
-	const bool& H_Fight_Spear() const { return H_Fight_Spear_; }
-	const bool& H_Fight_CrossBow() const { return H_Fight_CrossBow_; }
-
 	operator EALSOverlayState() const { return State; }
 
 	void operator=(const EALSOverlayState NewAction)
@@ -436,28 +376,6 @@ public:
 		Binoculars_ = State == EALSOverlayState::Binoculars;
 		Box_ = State == EALSOverlayState::Box;
 		Barrel_ = State == EALSOverlayState::Barrel;
-
-		//自己项目
-		Barrel_ = State == EALSOverlayState::Barrel;
-		Normal_ = State == EALSOverlayState::Normal;
-		Normal_Flager_ = State == EALSOverlayState::Normal_Flager;
-		Normal_Spear_ = State == EALSOverlayState::Normal_Spear;
-		Fight_EmptyHand_ = State == EALSOverlayState::Fight_EmptyHand;
-		Fight_Bow_ = State == EALSOverlayState::Fight_Bow;
-		Fight_CrossBow_ = State == EALSOverlayState::Fight_CrossBow;
-		Fight_Spear_ = State == EALSOverlayState::Fight_Spear;
-		Fight_Spear_Shield_ = State == EALSOverlayState::Fight_Spear_Shield;
-		Fight_Short_S_ = State == EALSOverlayState::Fight_Short_S;
-		Fight_Short_D_ = State == EALSOverlayState::Fight_Short_D;
-		Fight_Short_Shield_ = State == EALSOverlayState::Fight_Short_Shield;
-		Fight_LongAxe_D_ = State == EALSOverlayState::Fight_LongAxe_D;
-		H_Normal_ = State == EALSOverlayState::H_Normal;
-		H_Normal_Spear_ = State == EALSOverlayState::H_Normal_Spear;
-		H_Fight_Bow_ = State == EALSOverlayState::H_Fight_Bow;
-		H_Fight_Short_ = State == EALSOverlayState::H_Fight_Short;
-		H_Fight_LongAxe_ = State == EALSOverlayState::H_Fight_LongAxe;
-		H_Fight_Spear_ = State == EALSOverlayState::H_Fight_Spear;
-		H_Fight_CrossBow_ = State == EALSOverlayState::H_Fight_CrossBow;
 	}
 };
 

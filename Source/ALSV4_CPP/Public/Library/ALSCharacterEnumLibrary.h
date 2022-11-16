@@ -81,26 +81,7 @@ enum class EALSOverlayState : uint8
 	Binoculars,
 	Box,
 	Barrel,
-	Normal,
-	//自定义开始
-	Normal_Spear,
-	Normal_Flager,
-	Fight_EmptyHand,
-	Fight_Bow,
-	Fight_CrossBow,
-	Fight_Spear,
-	Fight_Spear_Shield,
-	Fight_Short_S,
-	Fight_Short_D,
-	Fight_Short_Shield,
-	Fight_LongAxe_D,
-	H_Normal,
-	H_Normal_Spear,
-	H_Fight_Bow,
-	H_Fight_Short,
-	H_Fight_LongAxe,
-	H_Fight_Spear,
-	H_Fight_CrossBow
+	Normal
 };
 
 /**
@@ -111,9 +92,7 @@ enum class EALSRotationMode : uint8
 {
 	VelocityDirection,
 	LookingDirection,
-	Aiming,
-	NoRotation
-
+	Aiming
 };
 
 /**

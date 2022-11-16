@@ -306,8 +306,9 @@ public:
 	UFUNCTION(BlueprintGetter, Category = "ALS|Essential Information")
 	float GetSpeed() const { return Speed; }
 
-	UFUNCTION(BlueprintCallable, Category = "ALS|Essential Information")
-	FRotator GetAimingRotation() const { return AimingRotation; }
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "ALS|Essential Information")
+	FRotator GetAimingRotation() const;
+	FRotator GetAimingRotation_Implementation() const { return AimingRotation; }
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Essential Information")
 	float GetAimYawRate() const { return AimYawRate; }
@@ -316,45 +317,59 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void ForwardMovementAction(float Value);
+	virtual void ForwardMovementAction_Implementation(float Value);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void RightMovementAction(float Value);
+	virtual void RightMovementAction_Implementation(float Value);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void CameraUpAction(float Value);
+	virtual void CameraUpAction_Implementation(float Value);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void CameraRightAction(float Value);
+	virtual void CameraRightAction_Implementation(float Value);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void JumpAction(bool bValue);
+	virtual void JumpAction_Implementation(bool bValue);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void SprintAction(bool bValue);
+	virtual void SprintAction_Implementation(bool bValue);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void AimAction(bool bValue);
+	virtual void AimAction_Implementation(bool bValue);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void CameraTapAction();
+	virtual void CameraTapAction_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void CameraHeldAction();
+	virtual void CameraHeldAction_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void StanceAction();
+	virtual void StanceAction_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void WalkAction();
+	virtual void WalkAction_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void RagdollAction();
+	virtual void RagdollAction_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void VelocityDirectionAction();
+	virtual void VelocityDirectionAction_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "ALS|Input")
 	void LookingDirectionAction();
+	virtual void LookingDirectionAction_Implementation();
 
 	/** Replicated Essential Information*/
 

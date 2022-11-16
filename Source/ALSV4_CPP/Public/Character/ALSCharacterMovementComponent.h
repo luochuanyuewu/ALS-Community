@@ -60,7 +60,7 @@ class ALSV4_CPP_API UALSCharacterMovementComponent : public UCharacterMovementCo
 	UPROPERTY()
 	EALSGait AllowedGait = EALSGait::Walking;
 
-	UPROPERTY(BlueprintReadOnly, Category = "ALS|Movement System")
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "ALS|Movement System")
 	FALSMovementSettings CurrentMovementSettings;
 
 	// Set Movement Curve (Called in every instance)
