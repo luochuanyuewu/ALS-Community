@@ -9,7 +9,7 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Materials/MaterialInterface.h"
 #include "Library/ALSCharacterEnumLibrary.h"
-
+#include "Sound/SoundBase.h"
 #include "ALSCharacterStructLibrary.generated.h"
 
 class UCurveVector;
@@ -18,7 +18,6 @@ class UAnimSequenceBase;
 class UCurveFloat;
 class UNiagaraSystem;
 class UMaterialInterface;
-class USoundBase;
 class UPrimitiveComponent;
 
 USTRUCT(BlueprintType)
