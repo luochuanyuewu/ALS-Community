@@ -5,22 +5,25 @@
 #include "Character/Animation/Notify/ALSAnimNotifyGroundedEntryState.h"
 
 #include "Character/ALSBaseCharacter.h"
+#include "Character/ALSComponent.h"
 #include "Character/Animation/ALSCharacterAnimInstance.h"
 
 void UALSAnimNotifyGroundedEntryState::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	AALSBaseCharacter* Character = Cast<AALSBaseCharacter>(MeshComp->GetOwner());
-	if (Character)
+
+	if (UALSComponent* ALS = UALSComponent::FindALSComponent(MeshComp->GetOwner()))
 	{
-		Character->SetGroundedEntryState(GroundedEntryState);
+		ALS->SetGroundedEntryState(GroundedEntryState);
 	}
+
 }
 
 FString UALSAnimNotifyGroundedEntryState::GetNotifyName_Implementation() const
 {
 	FString Name(TEXT("Grounded Entry State: "));
-	Name.Append(GetEnumerationToString(GroundedEntryState));
+	Name.Append(GroundedEntryState.ToString());
 	return Name;
 }
+

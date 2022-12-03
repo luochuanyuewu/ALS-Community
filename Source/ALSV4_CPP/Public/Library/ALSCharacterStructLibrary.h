@@ -5,6 +5,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ALSGameplayTags.h"
+#include "GameplayTagContainer.h"
 #include "Engine/DataTable.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Materials/MaterialInterface.h"
@@ -291,6 +293,17 @@ struct FALSMovementSettings
 		default:
 			return RunSpeed;
 		}
+	}
+
+	float GetSpeedForGait(const FGameplayTag Gait) const
+	{
+		if (Gait == FALSGameplayTags::Get().Gait_Running)
+			return RunSpeed;
+		if (Gait == FALSGameplayTags::Get().Gait_Sprinting)
+			return SprintSpeed;
+		if (Gait == FALSGameplayTags::Get().Gait_Walking)
+			return WalkSpeed;
+		return RunSpeed;
 	}
 };
 

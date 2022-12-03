@@ -8,7 +8,6 @@
 #include "GameFramework/PlayerController.h"
 #include "ALSPlayerController.generated.h"
 
-class AALSBaseCharacter;
 class UInputMappingContext;
 
 /**
@@ -112,7 +111,7 @@ protected:
 public:
 	/** Main character reference */
 	UPROPERTY(BlueprintReadOnly, Category = "ALS")
-	TObjectPtr<AALSBaseCharacter> PossessedCharacter = nullptr;
+	TObjectPtr<ACharacter> PossessedCharacter = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "ALS|Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMappingContext = nullptr;

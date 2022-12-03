@@ -9,7 +9,7 @@
 #include "InputMappingContext.h"
 #include "Engine/LocalPlayer.h"
 #include "AI/ALSAIController.h"
-#include "Character/ALSCharacter.h"
+#include "Character/ALSComponent.h"
 #include "Character/ALSPlayerCameraManager.h"
 #include "Components/ALSDebugComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -17,7 +17,7 @@
 void AALSPlayerController::OnPossess(APawn* NewPawn)
 {
 	Super::OnPossess(NewPawn);
-	PossessedCharacter = Cast<AALSBaseCharacter>(NewPawn);
+	PossessedCharacter = Cast<ACharacter>(NewPawn);
 	if (!IsRunningDedicatedServer())
 	{
 		// Servers want to setup camera only in listen servers.
@@ -36,7 +36,7 @@ void AALSPlayerController::OnPossess(APawn* NewPawn)
 void AALSPlayerController::OnRep_Pawn()
 {
 	Super::OnRep_Pawn();
-	PossessedCharacter = Cast<AALSBaseCharacter>(GetPawn());
+	PossessedCharacter = Cast<ACharacter>(GetPawn());
 	SetupCamera();
 	SetupInputs();
 
@@ -122,7 +122,8 @@ void AALSPlayerController::ForwardMovementAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter)
 	{
-		PossessedCharacter->ForwardMovementAction(Value.GetMagnitude());
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->ForwardMovementAction(Value.GetMagnitude());
 	}
 }
 
@@ -130,7 +131,8 @@ void AALSPlayerController::RightMovementAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter)
 	{
-		PossessedCharacter->RightMovementAction(Value.GetMagnitude());
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->RightMovementAction(Value.GetMagnitude());
 	}
 }
 
@@ -138,7 +140,8 @@ void AALSPlayerController::CameraUpAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter)
 	{
-		PossessedCharacter->CameraUpAction(Value.GetMagnitude());
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->CameraUpAction(Value.GetMagnitude());
 	}
 }
 
@@ -146,7 +149,8 @@ void AALSPlayerController::CameraRightAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter)
 	{
-		PossessedCharacter->CameraRightAction(Value.GetMagnitude());
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->CameraRightAction(Value.GetMagnitude());
 	}
 }
 
@@ -154,7 +158,8 @@ void AALSPlayerController::JumpAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter)
 	{
-		PossessedCharacter->JumpAction(Value.Get<bool>());
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->JumpAction(Value.Get<bool>());
 	}
 }
 
@@ -162,7 +167,8 @@ void AALSPlayerController::SprintAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter)
 	{
-		PossessedCharacter->SprintAction(Value.Get<bool>());
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->SprintAction(Value.Get<bool>());
 	}
 }
 
@@ -170,7 +176,8 @@ void AALSPlayerController::AimAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter)
 	{
-		PossessedCharacter->AimAction(Value.Get<bool>());
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->AimAction(Value.Get<bool>());
 	}
 }
 
@@ -178,7 +185,8 @@ void AALSPlayerController::CameraTapAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter)
 	{
-		PossessedCharacter->CameraTapAction();
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->CameraTapAction();
 	}
 }
 
@@ -186,15 +194,17 @@ void AALSPlayerController::CameraHeldAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter)
 	{
-		PossessedCharacter->CameraHeldAction();
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->CameraHeldAction();
 	}
 }
 
 void AALSPlayerController::StanceAction(const FInputActionValue& Value)
 {
-	if (PossessedCharacter && Value.Get<bool>())
+	if (PossessedCharacter)
 	{
-		PossessedCharacter->StanceAction();
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->StanceAction();
 	}
 }
 
@@ -202,7 +212,8 @@ void AALSPlayerController::WalkAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter && Value.Get<bool>())
 	{
-		PossessedCharacter->WalkAction();
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->WalkAction();
 	}
 }
 
@@ -210,7 +221,8 @@ void AALSPlayerController::RagdollAction(const FInputActionValue& Value)
 {
 	if (PossessedCharacter && Value.Get<bool>())
 	{
-		PossessedCharacter->RagdollAction();
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->RagdollAction();
 	}
 }
 
@@ -218,7 +230,8 @@ void AALSPlayerController::VelocityDirectionAction(const FInputActionValue& Valu
 {
 	if (PossessedCharacter && Value.Get<bool>())
 	{
-		PossessedCharacter->VelocityDirectionAction();
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->VelocityDirectionAction();
 	}
 }
 
@@ -226,7 +239,8 @@ void AALSPlayerController::LookingDirectionAction(const FInputActionValue& Value
 {
 	if (PossessedCharacter && Value.Get<bool>())
 	{
-		PossessedCharacter->LookingDirectionAction();
+		if (UALSComponent* ALS = UALSComponent::FindALSComponent(PossessedCharacter))
+			ALS->LookingDirectionAction();
 	}
 }
 

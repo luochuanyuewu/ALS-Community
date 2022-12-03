@@ -5,6 +5,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
 #include "Library/ALSCharacterEnumLibrary.h"
 
@@ -23,6 +24,8 @@ class ALSV4_CPP_API UALSAnimNotifyGroundedEntryState : public UAnimNotify
 	virtual FString GetNotifyName_Implementation() const override;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify)
-	EALSGroundedEntryState GroundedEntryState = EALSGroundedEntryState::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= AnimNotify)
+	FGameplayTag GroundedEntryState;
+
 };

@@ -5,6 +5,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ALSGameplayTags.h"
+#include "GameplayTagContainer.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "Library/ALSCharacterEnumLibrary.h"
 
@@ -29,4 +31,8 @@ class ALSV4_CPP_API UALSNotifyStateMovementAction : public UAnimNotifyState
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify)
 	EALSMovementAction MovementAction = EALSMovementAction::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify, meta=(Categories="ALS.MovementAction"))
+	FGameplayTag MovementActionTag = FALSGameplayTags::Get().MovementAction_None;
+	
 };

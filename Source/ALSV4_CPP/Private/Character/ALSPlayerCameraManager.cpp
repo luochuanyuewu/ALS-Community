@@ -3,11 +3,10 @@
 
 
 #include "Character/ALSPlayerCameraManager.h"
-
-
-#include "Character/ALSBaseCharacter.h"
+#include "Character/ALSComponent.h"
 #include "Character/ALSPlayerController.h"
 #include "Character/Animation/ALSPlayerCameraBehavior.h"
+#include "Character/Animation/ALSPlayerCameraBehaviorV2.h"
 #include "Components/ALSDebugComponent.h"
 
 #include "Kismet/KismetMathLibrary.h"
@@ -35,28 +34,29 @@ AALSPlayerCameraManager::AALSPlayerCameraManager()
 	CameraBehavior->bHiddenInGame = true;
 }
 
-void AALSPlayerCameraManager::OnPossess(AALSBaseCharacter* NewCharacter)
+void AALSPlayerCameraManager::OnPossess(ACharacter* NewCharacter)
 {
 	// Set "Controlled Pawn" when Player Controller Possesses new character. (called from Player Controller)
 	check(NewCharacter);
 	ControlledCharacter = NewCharacter;
+	ALSComponent = UALSComponent::FindALSComponent(NewCharacter);
+	check(ALSComponent)
 
 	// Update references in the Camera Behavior AnimBP.
-	UALSPlayerCameraBehavior* CastedBehv = Cast<UALSPlayerCameraBehavior>(CameraBehavior->GetAnimInstance());
+	UALSPlayerCameraBehaviorV2* CastedBehv = Cast<UALSPlayerCameraBehaviorV2>(CameraBehavior->GetAnimInstance());
 	if (CastedBehv)
 	{
-		NewCharacter->SetCameraBehavior(CastedBehv);
-		CastedBehv->MovementState = NewCharacter->GetMovementState();
-		CastedBehv->MovementAction = NewCharacter->GetMovementAction();
-		CastedBehv->bRightShoulder = NewCharacter->IsRightShoulder();
-		CastedBehv->Gait = NewCharacter->GetGait();
-		CastedBehv->SetRotationMode(NewCharacter->GetRotationMode());
-		CastedBehv->Stance = NewCharacter->GetStance();
-		CastedBehv->ViewMode = NewCharacter->GetViewMode();
+		CastedBehv->MovementState = ALSComponent->GetMovementState();
+		CastedBehv->MovementAction = ALSComponent->GetMovementAction();
+		CastedBehv->bRightShoulder = ALSComponent->IsRightShoulder();
+		CastedBehv->Gait = ALSComponent->GetGait();
+		CastedBehv->SetRotationMode(ALSComponent->GetRotationMode());
+		CastedBehv->Stance = ALSComponent->GetStance();
+		CastedBehv->ViewMode = ALSComponent->GetViewMode();
 	}
 
 	// Initial position
-	const FVector& TPSLoc = ControlledCharacter->GetThirdPersonPivotTarget().GetLocation();
+	const FVector& TPSLoc = ALSComponent->GetThirdPersonPivotTarget().GetLocation();
 	SetActorLocation(TPSLoc);
 	SmoothedPivotTarget.SetLocation(TPSLoc);
 
@@ -82,8 +82,7 @@ void AALSPlayerCameraManager::UpdateViewTargetInternal(FTViewTarget& OutVT, floa
 		FVector OutLocation;
 		FRotator OutRotation;
 		float OutFOV;
-
-		if (OutVT.Target->IsA<AALSBaseCharacter>())
+		if (ALSComponent != nullptr)
 		{
 			if (CustomCameraBehavior(DeltaTime, OutLocation, OutRotation, OutFOV))
 			{
@@ -122,18 +121,18 @@ FVector AALSPlayerCameraManager::CalculateAxisIndependentLag(FVector CurrentLoca
 
 bool AALSPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Location, FRotator& Rotation, float& FOV)
 {
-	if (!ControlledCharacter)
+	if (!ControlledCharacter || !ALSComponent)
 	{
 		return false;
 	}
 
 	// Step 1: Get Camera Parameters from CharacterBP via the Camera Interface
-	const FTransform& PivotTarget = ControlledCharacter->GetThirdPersonPivotTarget();
-	const FVector& FPTarget = ControlledCharacter->GetFirstPersonCameraTarget();
+	const FTransform& PivotTarget = ALSComponent->GetThirdPersonPivotTarget();
+	const FVector& FPTarget = ALSComponent->GetFirstPersonCameraTarget();
 	float TPFOV = 90.0f;
 	float FPFOV = 90.0f;
 	bool bRightShoulder = false;
-	ControlledCharacter->GetCameraParameters(TPFOV, FPFOV, bRightShoulder);
+	ALSComponent->GetCameraParameters(TPFOV, FPFOV, bRightShoulder);
 
 	// Step 2: Calculate Target Camera Rotation. Use the Control Rotation and interpolate for smooth camera rotation.
 	const FRotator& InterpResult = FMath::RInterpTo(GetCameraRotation(),
@@ -184,7 +183,7 @@ bool AALSPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loc
 	// Functions like the normal spring arm, but can allow for different trace origins regardless of the pivot
 	FVector TraceOrigin;
 	float TraceRadius;
-	ECollisionChannel TraceChannel = ControlledCharacter->GetThirdPersonTraceParams(TraceOrigin, TraceRadius);
+	ECollisionChannel TraceChannel = ALSComponent->GetThirdPersonTraceParams(TraceOrigin, TraceRadius);
 
 	UWorld* World = GetWorld();
 	check(World);

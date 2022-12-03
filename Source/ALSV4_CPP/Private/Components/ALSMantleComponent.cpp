@@ -3,9 +3,8 @@
 
 
 #include "Components/ALSMantleComponent.h"
-
-
 #include "Character/ALSCharacter.h"
+#include "Character/ALSComponent.h"
 #include "Character/Animation/ALSCharacterAnimInstance.h"
 #include "Components/ALSDebugComponent.h"
 #include "Curves/CurveVector.h"
@@ -35,9 +34,11 @@ void UALSMantleComponent::BeginPlay()
 
 	if (GetOwner())
 	{
-		OwnerCharacter = Cast<AALSBaseCharacter>(GetOwner());
+		OwnerCharacter = Cast<ACharacter>(GetOwner());
 		if (OwnerCharacter)
 		{
+			ALSComponent = OwnerCharacter->FindComponentByClass<UALSComponent>();
+			check(ALSComponent);
 			ALSDebugComponent = OwnerCharacter->FindComponentByClass<UALSDebugComponent>();
 
 			AddTickPrerequisiteActor(OwnerCharacter); // Always tick after owner, so we'll use updated values
@@ -54,8 +55,8 @@ void UALSMantleComponent::BeginPlay()
 			// MantleTimeline->SetTimelineLengthMode(TL_TimelineLength);
 			// MantleTimeline->AddInterpFloat(MantleTimelineCurve, TimelineUpdated);
 
-			OwnerCharacter->JumpPressedDelegate.AddUniqueDynamic(this, &UALSMantleComponent::OnOwnerJumpInput);
-			OwnerCharacter->RagdollStateChangedDelegate.AddUniqueDynamic(
+			ALSComponent->JumpPressedDelegate.AddUniqueDynamic(this, &UALSMantleComponent::OnOwnerJumpInput);
+			ALSComponent->RagdollStateChangedDelegate.AddUniqueDynamic(
 				this, &UALSMantleComponent::OnOwnerRagdollStateChanged);
 		}
 	}
@@ -63,25 +64,21 @@ void UALSMantleComponent::BeginPlay()
 
 void UALSMantleComponent::TimelineUpdate(float BlendIn)
 {
-	switch (const EALSMovementState MovementState = OwnerCharacter->GetMovementState())
+	FGameplayTag MovementState = ALSComponent->GetMovementState();
+	if (MovementState == FALSGameplayTags::Get().MovementState_Mantling)
 	{
-	case EALSMovementState::Mantling:
 		MantleUpdate(BlendIn);
-		break;
-	default:
-		break;;
 	}
 }
 
 void UALSMantleComponent::TimelineFinish()
 {
-	switch (const EALSMovementState MovementState = OwnerCharacter->GetMovementState())
+	FGameplayTag MovementState = ALSComponent->GetMovementState();
+
+	if (MovementState == FALSGameplayTags::Get().MovementState_Mantling)
 	{
-	case EALSMovementState::Mantling:
 		MantleEnd();
-		break;
-	default:
-		break;
+
 	}
 }
 
@@ -108,10 +105,10 @@ void UALSMantleComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UALSMantleComponent::TickV2(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	if (OwnerCharacter && OwnerCharacter->GetMovementState() == EALSMovementState::InAir)
+	if (ALSComponent && ALSComponent->GetMovementState() == FALSGameplayTags::Get().MovementState_InAir)
 	{
 		// Perform a mantle check if falling while movement input is pressed.
-		if (OwnerCharacter->HasMovementInput())
+		if (ALSComponent->HasMovementInput())
 		{
 			MantleCheck(FallingTraceSettings, EDrawDebugTrace::Type::ForOneFrame);
 		}
@@ -135,7 +132,7 @@ void UALSMantleComponent::MantleStart(float MantleHeight, const FALSComponentAnd
 	SetComponentTickEnabledAsync(false);
 
 	// Step 1: Get the Mantle Asset and use it to set the new Mantle Params.
-	const FALSMantleAsset MantleAsset = GetMantleAsset(MantleType, OwnerCharacter->GetOverlayState());
+	const FALSMantleAsset MantleAsset = GetMantleAsset(MantleType, ALSComponent->GetOverlayState());
 	check(MantleAsset.PositionCorrectionCurve)
 
 	MantleParams.AnimMontage = MantleAsset.AnimMontage;
@@ -170,7 +167,7 @@ void UALSMantleComponent::MantleStart(float MantleHeight, const FALSComponentAnd
 
 	// Step 5: Clear the Character Movement Mode and set the Movement State to Mantling
 	OwnerCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
-	OwnerCharacter->SetMovementState(EALSMovementState::Mantling);
+	ALSComponent->SetMovementState(FALSGameplayTags::Get().MovementState_Mantling);
 
 	// Step 6: Configure the Mantle Timeline so that it is the same length as the
 	// Lerp/Correction curve minus the starting position, and plays at the same speed as the animation.
@@ -314,7 +311,7 @@ bool UALSMantleComponent::MantleCheck(const FALSMantleTraceSettings& TraceSettin
 
 	// Step 4: Determine the Mantle Type by checking the movement mode and Mantle Height.
 	EALSMantleType MantleType;
-	if (OwnerCharacter->GetMovementState() == EALSMovementState::InAir)
+	if (ALSComponent->GetMovementState() == FALSGameplayTags::Get().MovementState_InAir)
 	{
 		MantleType = EALSMantleType::FallingCatch;
 	}
@@ -414,7 +411,7 @@ void UALSMantleComponent::MantleUpdate(float BlendIn)
 		                          BlendIn);
 
 	// Step 4: Set the actors location and rotation to the Lerped Target.
-	OwnerCharacter->SetActorLocationAndTargetRotation(LerpedTarget.GetLocation(), LerpedTarget.GetRotation().Rotator());
+	ALSComponent->SetActorLocationAndTargetRotation(LerpedTarget.GetLocation(), LerpedTarget.GetRotation().Rotator());
 }
 
 void UALSMantleComponent::MantleEnd()
@@ -438,16 +435,16 @@ void UALSMantleComponent::OnOwnerJumpInput()
 {
 	// Check if character is able to do one of the special mantling
 
-	if (OwnerCharacter && OwnerCharacter->GetMovementAction() == EALSMovementAction::None)
+	if (ALSComponent && ALSComponent->GetMovementAction() == FALSGameplayTags::Get().MovementAction_None)
 	{
-		if (OwnerCharacter->GetMovementState() == EALSMovementState::Grounded)
+		if (ALSComponent->GetMovementState() == FALSGameplayTags::Get().MovementState_Grounded)
 		{
-			if (OwnerCharacter->HasMovementInput())
+			if (ALSComponent->HasMovementInput())
 			{
 				MantleCheck(GroundedTraceSettings, EDrawDebugTrace::Type::ForDuration);
 			}
 		}
-		else if (OwnerCharacter->GetMovementState() == EALSMovementState::InAir)
+		else if (ALSComponent->GetMovementState() == FALSGameplayTags::Get().MovementState_InAir)
 		{
 			MantleCheck(FallingTraceSettings, EDrawDebugTrace::Type::ForDuration);
 		}

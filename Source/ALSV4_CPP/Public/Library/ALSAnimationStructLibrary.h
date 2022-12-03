@@ -90,6 +90,8 @@ struct FALSAnimCharacterInformation
 {
 	GENERATED_BODY()
 
+	FALSAnimCharacterInformation();
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Character Information")
 	FRotator AimingRotation;
 
@@ -127,17 +129,17 @@ struct FALSAnimCharacterInformation
 	float ZoomAmount = 0.0f;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Character Information")
-	EALSMovementState PrevMovementState = EALSMovementState::None;
+	FGameplayTag PrevMovementState;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Character Information")
-	EALSViewMode ViewMode = EALSViewMode::ThirdPerson;
+	FGameplayTag ViewMode;
 
 	/**角色速度方向和角色方向的Z轴偏移*/
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Character Information")
-	float VelocityAngle;
+	float VelocityAngle = 0.0f;
 	/**角色控制方向和角色方向的Z轴偏移*/
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "ALS|Character Information")
-	float ControlAngle;
+	float ControlAngle = 0.0f;
 };
 
 USTRUCT(BlueprintType)

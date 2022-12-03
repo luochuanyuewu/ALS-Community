@@ -4,15 +4,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ALSGameplayTags.h"
 #include "Animation/AnimInstance.h"
 #include "Library/ALSAnimationStructLibrary.h"
 #include "Library/ALSStructEnumLibrary.h"
 
 #include "ALSCharacterAnimInstance.generated.h"
 
+class UALSComponent;
 // forward declarations
 class UALSDebugComponent;
-class AALSBaseCharacter;
 class UCurveFloat;
 class UAnimSequence;
 class UCurveVector;
@@ -56,7 +57,7 @@ protected:
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Grounded")
-	void SetGroundedEntryState(EALSGroundedEntryState NewState)
+	void SetGroundedEntryState(FGameplayTag NewState)
 	{
 		GroundedEntryState = NewState;
 	}
@@ -161,8 +162,12 @@ protected:
 
 public:
 	/** References */
+
 	UPROPERTY(BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	TObjectPtr<AALSBaseCharacter> Character = nullptr;
+	TObjectPtr<ACharacter> OwnerCharacter = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Read Only Data|Character Information")
+	TObjectPtr<UALSComponent> ALSComponent = nullptr;
 
 	/** Character Information */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information", Meta = (
@@ -170,22 +175,22 @@ public:
 	FALSAnimCharacterInformation CharacterInformation;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	FALSMovementState MovementState = EALSMovementState::None;
+	FGameplayTag MovementState = FALSGameplayTags::Get().MovementState_None;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	FALSMovementAction MovementAction = EALSMovementAction::None;
+	FGameplayTag MovementAction = FALSGameplayTags::Get().MovementAction_None;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	FALSRotationMode RotationMode = EALSRotationMode::VelocityDirection;
+	FGameplayTag RotationMode = FALSGameplayTags::Get().RotationMode_VelocityDirection;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	FALSGait Gait = EALSGait::Walking;
+	FGameplayTag Gait = FALSGameplayTags::Get().Gait_Walking;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	FALSStance Stance = EALSStance::Standing;
+	FGameplayTag Stance = FALSGameplayTags::Get().Stance_Standing;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	FALSOverlayState OverlayState = EALSOverlayState::Default;
+	FGameplayTag OverlayState = FALSGameplayTags::Get().OverlayState_Default;
 
 	/** Anim Graph - Grounded */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Anim Graph - Grounded", Meta = (
@@ -202,7 +207,7 @@ public:
 	FVector RelativeAccelerationAmount = FVector::ZeroVector;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Anim Graph - Grounded")
-	FALSGroundedEntryState GroundedEntryState = EALSGroundedEntryState::None;
+	FGameplayTag GroundedEntryState = FALSGameplayTags::Get().GroundedEntryState_None;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Read Only Data|Anim Graph - Grounded")
 	FALSMovementDirection MovementDirection = EALSMovementDirection::Forward;

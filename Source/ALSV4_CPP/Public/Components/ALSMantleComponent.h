@@ -5,12 +5,15 @@
 
 #include "CoreMinimal.h"
 
-#include "Character/ALSBaseCharacter.h"
 #include "Components/ActorComponent.h"
+#include "Components/TimelineComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Library/ALSCharacterStructLibrary.h"
 
 #include "ALSMantleComponent.generated.h"
 
+class ACharacter;
+class UALSComponent;
 // forward declarations
 class UALSDebugComponent;
 
@@ -45,7 +48,7 @@ public:
 
 	/** Implement on BP to get correct mantle parameter set according to character state */
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "ALS|Mantle System")
-	FALSMantleAsset GetMantleAsset(EALSMantleType MantleType, EALSOverlayState CurrentOverlayState);
+	FALSMantleAsset GetMantleAsset(EALSMantleType MantleType, FGameplayTag CurrentOverlayState);
 
 protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
@@ -115,7 +118,10 @@ protected:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<AALSBaseCharacter> OwnerCharacter;
+	TObjectPtr<ACharacter> OwnerCharacter;
+
+	UPROPERTY()
+	TObjectPtr<UALSComponent> ALSComponent;
 
 	UPROPERTY()
 	TObjectPtr<UALSDebugComponent> ALSDebugComponent = nullptr;

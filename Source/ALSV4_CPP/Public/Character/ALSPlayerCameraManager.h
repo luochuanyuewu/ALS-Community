@@ -7,6 +7,7 @@
 #include "Camera/PlayerCameraManager.h"
 #include "ALSPlayerCameraManager.generated.h"
 
+class UALSComponent;
 // forward declarations
 class UALSDebugComponent;
 class AALSBaseCharacter;
@@ -23,7 +24,7 @@ public:
 	AALSPlayerCameraManager();
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Camera")
-	void OnPossess(AALSBaseCharacter* NewCharacter);
+	void OnPossess(ACharacter* NewCharacter);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Camera")
 	float GetCameraBehaviorParam(FName CurveName) const;
@@ -44,7 +45,10 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ALS|Camera")
-	TObjectPtr<AALSBaseCharacter> ControlledCharacter = nullptr;
+	TObjectPtr<ACharacter> ControlledCharacter = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ALS|Camera")
+	TObjectPtr<UALSComponent> ALSComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "ALS|Camera")
 	TObjectPtr<USkeletalMeshComponent> CameraBehavior = nullptr;

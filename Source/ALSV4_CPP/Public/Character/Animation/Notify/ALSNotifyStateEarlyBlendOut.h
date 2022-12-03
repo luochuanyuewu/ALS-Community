@@ -5,6 +5,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "Library/ALSCharacterEnumLibrary.h"
 
@@ -24,6 +25,11 @@ class ALSV4_CPP_API UALSNotifyStateEarlyBlendOut : public UAnimNotifyState
 	virtual FString GetNotifyName_Implementation() const override;
 
 public:
+
+	UALSNotifyStateEarlyBlendOut();
+
+	// virtual void PostInitProperties() override;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify)
 	TObjectPtr<UAnimMontage> ThisMontage = nullptr;
 
@@ -33,14 +39,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify)
 	bool bCheckMovementState = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify)
-	EALSMovementState MovementStateEquals = EALSMovementState::None;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify, meta=(Categories="ALS.MovementState"))
+	FGameplayTag MovementState;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify)
 	bool bCheckStance = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify)
-	EALSStance StanceEquals = EALSStance::Standing;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify, meta=(Categories="ALS.Stance"))
+	FGameplayTag Stance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify)
 	bool bCheckMovementInput = false;

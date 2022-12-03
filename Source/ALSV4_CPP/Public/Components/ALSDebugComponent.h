@@ -9,7 +9,8 @@
 #include "Components/ActorComponent.h"
 #include "ALSDebugComponent.generated.h"
 
-class AALSBaseCharacter;
+class UALSComponent;
+class ACharacter;
 class USkeletalMesh;
 
 UCLASS(Blueprintable, BlueprintType)
@@ -135,7 +136,10 @@ protected:
 
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "ALS|Debug")
-	TObjectPtr<AALSBaseCharacter> OwnerCharacter;
+	TObjectPtr<ACharacter> OwnerCharacter;
+
+	UPROPERTY(BlueprintReadOnly, Category = "ALS|Debug")
+	TObjectPtr<UALSComponent> ALSComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|Debug")
 	bool bSlomo = false;
@@ -150,10 +154,10 @@ public:
 	TObjectPtr<USkeletalMesh> DebugSkeletalMesh = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ALS|Debug")
-	TArray<TObjectPtr<AALSBaseCharacter>> AvailableDebugCharacters;
+	TArray<TObjectPtr<ACharacter>> AvailableDebugCharacters;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ALS|Debug")
-	TObjectPtr<AALSBaseCharacter> DebugFocusCharacter = nullptr;
+	TObjectPtr<ACharacter> DebugFocusCharacter = nullptr;
 private:
 	static bool bDebugView;
 

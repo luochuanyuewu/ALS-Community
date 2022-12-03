@@ -2,13 +2,13 @@
 // Source Code:     https://github.com/dyanikoglu/ALS-Community
 
 #include "Components/ALSDebugComponent.h"
-
-
-#include "Character/ALSBaseCharacter.h"
 #include "Character/ALSPlayerCameraManager.h"
 #include "Character/Animation/ALSPlayerCameraBehavior.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Character/ALSComponent.h"
+#include "Character/Animation/ALSPlayerCameraBehaviorV2.h"
+#include "GameFramework/Character.h"
 
 bool UALSDebugComponent::bDebugView = false;
 bool UALSDebugComponent::bShowTraces = false;
@@ -30,7 +30,7 @@ void UALSDebugComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 #if !UE_BUILD_SHIPPING
-	if (!OwnerCharacter)
+	if (!ALSComponent)
 	{
 		return;
 	}
@@ -60,7 +60,7 @@ void UALSDebugComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			AALSPlayerCameraManager* CamManager = Cast<AALSPlayerCameraManager>(Controller->PlayerCameraManager);
 			if (CamManager)
 			{
-				CamManager->DrawDebugTargets(OwnerCharacter->GetThirdPersonPivotTarget().GetLocation());
+				CamManager->DrawDebugTargets(ALSComponent->GetThirdPersonPivotTarget().GetLocation());
 			}
 		}
 	}
@@ -115,8 +115,11 @@ void UALSDebugComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OwnerCharacter = Cast<AALSBaseCharacter>(GetOwner());
+	OwnerCharacter = Cast<ACharacter>(GetOwner());
 	DebugFocusCharacter = OwnerCharacter;
+	ALSComponent = OwnerCharacter->FindComponentByClass<UALSComponent>();
+
+	check(ALSComponent)
 	if (OwnerCharacter)
 	{
 		SetDynamicMaterials();
@@ -127,18 +130,21 @@ void UALSDebugComponent::BeginPlay()
 void UALSDebugComponent::DetectDebuggableCharactersInWorld()
 {
 	// Get all ALSBaseCharacter's, which are currently present to show them later in the ALS HUD for debugging purposes.
-	TArray<AActor*> AlsBaseCharacters;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AALSBaseCharacter::StaticClass(), AlsBaseCharacters);
+	TArray<AActor*> AlsCharacters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter::StaticClass(), AlsCharacters);
 
 	AvailableDebugCharacters.Empty();
-	if (AlsBaseCharacters.Num() > 0)
+	if (AlsCharacters.Num() > 0)
 	{
-		AvailableDebugCharacters.Reserve(AlsBaseCharacters.Num());
-		for (AActor* Character : AlsBaseCharacters)
+		AvailableDebugCharacters.Reserve(AlsCharacters.Num());
+		for (AActor* Actor : AlsCharacters)
 		{
-			if (AALSBaseCharacter* AlsBaseCharacter = Cast<AALSBaseCharacter>(Character))
+			if (ACharacter* Character = Cast<ACharacter>(Actor))
 			{
-				AvailableDebugCharacters.Add(AlsBaseCharacter);
+				if (UALSComponent* ALSComp = Character->FindComponentByClass<UALSComponent>())
+				{
+					AvailableDebugCharacters.Add(Character);
+				}
 			}
 		}
 
@@ -173,7 +179,7 @@ void UALSDebugComponent::ToggleDebugView()
 		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	if (CamManager)
 	{
-		UALSPlayerCameraBehavior* CameraBehavior = Cast<UALSPlayerCameraBehavior>(
+		UALSPlayerCameraBehaviorV2* CameraBehavior = Cast<UALSPlayerCameraBehaviorV2>(
 			CamManager->CameraBehavior->GetAnimInstance());
 		if (CameraBehavior)
 		{
@@ -194,12 +200,19 @@ void UALSDebugComponent::ToggleDebugMesh()
 {
 	if (bDebugMeshVisible)
 	{
-		OwnerCharacter->SetVisibleMesh(DefaultSkeletalMesh);
+		if (UALSComponent* ALS =  UALSComponent::FindALSComponent(OwnerCharacter))
+		{
+			ALS->SetVisibleMesh(DefaultSkeletalMesh);
+		}
 	}
 	else
 	{
 		DefaultSkeletalMesh = OwnerCharacter->GetMesh()->GetSkeletalMeshAsset();
-		OwnerCharacter->SetVisibleMesh(DebugSkeletalMesh);
+		if (UALSComponent* ALS =  UALSComponent::FindALSComponent(OwnerCharacter))
+		{
+			ALS->SetVisibleMesh(DebugSkeletalMesh);
+		}
+
 	}
 	bDebugMeshVisible = !bDebugMeshVisible;
 }

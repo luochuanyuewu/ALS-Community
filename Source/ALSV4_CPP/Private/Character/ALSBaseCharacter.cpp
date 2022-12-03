@@ -17,17 +17,18 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "Character/ALSComponent.h"
 #include "Net/UnrealNetwork.h"
 
 
-const FName NAME_FP_Camera(TEXT("FP_Camera"));
-const FName NAME_Pelvis(TEXT("Pelvis"));
-const FName NAME_RagdollPose(TEXT("RagdollPose"));
-const FName NAME_RotationAmount(TEXT("RotationAmount"));
-const FName NAME_YawOffset(TEXT("YawOffset"));
-const FName NAME_pelvis(TEXT("pelvis"));
-const FName NAME_root(TEXT("root"));
-const FName NAME_spine_03(TEXT("spine_03"));
+static const FName NAME_FP_Camera(TEXT("FP_Camera"));
+static const FName NAME_Pelvis(TEXT("Pelvis"));
+static const FName NAME_RagdollPose(TEXT("RagdollPose"));
+static const FName NAME_RotationAmount(TEXT("RotationAmount"));
+static const FName NAME_YawOffset(TEXT("YawOffset"));
+static const FName NAME_pelvis(TEXT("pelvis"));
+static const FName NAME_root(TEXT("root"));
+static const FName NAME_spine_03(TEXT("spine_03"));
 
 
 AALSBaseCharacter::AALSBaseCharacter(const FObjectInitializer& ObjectInitializer)
@@ -906,6 +907,12 @@ void AALSBaseCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHe
 {
 	Super::OnStartCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
 
+	if (UALSComponent* ALSComponent = UALSComponent::FindALSComponent(this))
+	{
+		ALSComponent->OnOwnerCharacterStartCrouch(HalfHeightAdjust,ScaledHalfHeightAdjust);
+		return;
+	}
+	
 	SetStance(EALSStance::Crouching);
 }
 
@@ -913,12 +920,23 @@ void AALSBaseCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeig
 {
 	Super::OnEndCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
 
+	if (UALSComponent* ALSComponent = UALSComponent::FindALSComponent(this))
+	{
+		ALSComponent->OnOwnerCharacterEndCrouch(HalfHeightAdjust,ScaledHalfHeightAdjust);
+		return;
+	}
+
 	SetStance(EALSStance::Standing);
 }
 
 void AALSBaseCharacter::OnJumped_Implementation()
 {
 	Super::OnJumped_Implementation();
+	if (UALSComponent* ALSComponent = UALSComponent::FindALSComponent(this))
+	{
+		ALSComponent->OnOwnerCharacterJumped();
+		return;
+	}
 	if (IsLocallyControlled())
 	{
 		EventOnJumped();
@@ -932,6 +950,12 @@ void AALSBaseCharacter::OnJumped_Implementation()
 void AALSBaseCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
+
+	if (UALSComponent* ALSComponent = UALSComponent::FindALSComponent(this))
+	{
+		ALSComponent->OnOwnerCharacterLanded(Hit);
+		return;
+	}
 
 	if (IsLocallyControlled())
 	{
