@@ -6,8 +6,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Library/ALSCharacterStructLibrary.h"
-
+#include "ALSGameplayTags.h"
+#include "GameplayTagContainer.h"
 #include "ALSCharacterMovementComponent.generated.h"
+
 
 /**
  * Authoritative networked Character Movement
@@ -31,7 +33,7 @@ class ALSV4_CPP_API UALSCharacterMovementComponent : public UCharacterMovementCo
 
 		// Walk Speed Update
 		uint8 bSavedRequestMovementSettingsChange : 1;
-		EALSGait SavedAllowedGait = EALSGait::Walking;
+		FGameplayTag SavedAllowedGait = FALSGameplayTags::Get().Gait_Walking;
 	};
 
 	class ALSV4_CPP_API FNetworkPredictionData_Client_My : public FNetworkPredictionData_Client_Character
@@ -58,7 +60,7 @@ class ALSV4_CPP_API UALSCharacterMovementComponent : public UCharacterMovementCo
 	uint8 bRequestMovementSettingsChange = 1;
 
 	UPROPERTY()
-	EALSGait AllowedGait = EALSGait::Walking;
+	FGameplayTag AllowedGait = FALSGameplayTags::Get().Gait_Walking;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "ALS|Movement System")
 	FALSMovementSettings CurrentMovementSettings;
@@ -71,8 +73,8 @@ class ALSV4_CPP_API UALSCharacterMovementComponent : public UCharacterMovementCo
 
 	// Set Max Walking Speed (Called from the owning client)
 	UFUNCTION(BlueprintCallable, Category = "Movement Settings")
-	virtual void SetAllowedGait(EALSGait NewAllowedGait);
+	virtual void SetAllowedGait(UPARAM(meta=(Categories="ALS.Gait")) FGameplayTag NewAllowedGait);
 
 	UFUNCTION(Reliable, Server, Category = "Movement Settings")
-	void Server_SetAllowedGait(EALSGait NewAllowedGait);
+	void Server_SetAllowedGait(FGameplayTag NewAllowedGait);
 };

@@ -3,18 +3,14 @@
 
 
 #include "Character/ALSComponent.h"
-
-
 #include "ALSGameplayTags.h"
 #include "ALSSettings.h"
 #include "Character/Animation/ALSCharacterAnimInstance.h"
-#include "Character/Animation/ALSPlayerCameraBehaviorV2.h"
 #include "Library/ALSMathLibrary.h"
 #include "Components/ALSDebugComponent.h"
-
 #include "Components/CapsuleComponent.h"
 #include "Curves/CurveFloat.h"
-#include "Character/ALSCharacterMovementComponentV2.h"
+#include "Character/ALSCharacterMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -155,7 +151,7 @@ void UALSComponent::OnRegister()
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
 	if (OwnerCharacter)
 	{
-		MyCharacterMovementComponent = Cast<UALSCharacterMovementComponentV2>(OwnerCharacter->GetMovementComponent());
+		MyCharacterMovementComponent = Cast<UALSCharacterMovementComponent>(OwnerCharacter->GetMovementComponent());
 	}
 
 }
@@ -699,14 +695,22 @@ void UALSComponent::SetRightShoulder(bool bNewRightShoulder)
 
 ECollisionChannel UALSComponent::GetThirdPersonTraceParams(FVector& TraceOrigin, float& TraceRadius)
 {
-	TraceOrigin = OwnerCharacter->GetActorLocation();
-	TraceRadius = 10.0f;
-	return ECC_Visibility;
+	const FName CameraSocketName = bRightShoulder ? TEXT("TP_CameraTrace_R") : TEXT("TP_CameraTrace_L");
+	TraceOrigin = OwnerCharacter->GetMesh()->GetSocketLocation(CameraSocketName);
+	TraceRadius = 15.0f;
+	return ECC_Camera;
+	// TraceOrigin = OwnerCharacter->GetActorLocation();
+	// TraceRadius = 10.0f;
+	// return ECC_Visibility;
 }
 
 FTransform UALSComponent::GetThirdPersonPivotTarget()
 {
-	return OwnerCharacter->GetActorTransform();
+	// GetOwner()->GetActorTransform();
+	USkeletalMeshComponent* OwnerMesh = OwnerCharacter->GetMesh();
+	return FTransform(GetOwner()->GetActorRotation(),
+					  (OwnerMesh->GetSocketLocation(TEXT("Head")) + OwnerMesh->GetSocketLocation(TEXT("root"))) / 2.0f,
+					  FVector::OneVector);
 }
 
 FVector UALSComponent::GetFirstPersonCameraTarget()

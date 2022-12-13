@@ -3,18 +3,17 @@
 
 
 #include "Character/Animation/Notify/ALSNotifyStateMovementAction.h"
-
-#include "Character/ALSBaseCharacter.h"
+#include "Character/ALSComponent.h"
 
 void UALSNotifyStateMovementAction::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                                 float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	AALSBaseCharacter* BaseCharacter = Cast<AALSBaseCharacter>(MeshComp->GetOwner());
-	if (BaseCharacter)
+	UALSComponent* ALSComponent = UALSComponent::FindALSComponent(MeshComp->GetOwner());
+	if (ALSComponent)
 	{
-		BaseCharacter->SetMovementAction(MovementAction);
+		ALSComponent->SetMovementAction(MovementActionTag);
 	}
 }
 
@@ -23,10 +22,11 @@ void UALSNotifyStateMovementAction::NotifyEnd(USkeletalMeshComponent* MeshComp, 
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	AALSBaseCharacter* BaseCharacter = Cast<AALSBaseCharacter>(MeshComp->GetOwner());
-	if (BaseCharacter && BaseCharacter->GetMovementAction() == MovementAction)
+	UALSComponent* ALSComponent = UALSComponent::FindALSComponent(MeshComp->GetOwner());
+
+	if (ALSComponent && ALSComponent->GetMovementAction() == MovementActionTag)
 	{
-		BaseCharacter->SetMovementAction(EALSMovementAction::None);
+		ALSComponent->SetMovementAction(FALSGameplayTags::Get().MovementAction_None);
 	}
 }
 

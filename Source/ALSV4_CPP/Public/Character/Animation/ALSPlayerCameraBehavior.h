@@ -5,11 +5,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Animation/AnimInstance.h"
-#include "Library/ALSCharacterEnumLibrary.h"
-
 #include "ALSPlayerCameraBehavior.generated.h"
 
+class UALSComponent;
 class AALSBaseCharacter;
 class AALSPlayerController;
 
@@ -22,13 +22,17 @@ class ALSV4_CPP_API UALSPlayerCameraBehavior : public UAnimInstance
 	GENERATED_BODY()
 
 public:
-	void SetRotationMode(EALSRotationMode RotationMode);
+
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	
+	
+	void SetRotationMode(FGameplayTag RotationMode);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	EALSMovementState MovementState;
+	FGameplayTag MovementState;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	EALSMovementAction MovementAction;
+	FGameplayTag MovementAction;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Read Only Data|Character Information")
 	bool bLookingDirection = false;
@@ -40,17 +44,19 @@ public:
 	bool bAiming = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	EALSGait Gait;
+	FGameplayTag Gait;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	EALSStance Stance;
+	FGameplayTag Stance;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Read Only Data|Character Information")
-	EALSViewMode ViewMode;
+	FGameplayTag ViewMode;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Read Only Data|Character Information")
 	bool bRightShoulder = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Read Only Data|Character Information")
 	bool bDebugView = false;
+
+
 };

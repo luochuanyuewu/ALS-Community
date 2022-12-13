@@ -39,7 +39,7 @@ public:
 	UALSComponent(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Movement")
-	FORCEINLINE class UALSCharacterMovementComponentV2* GetMyMovementComponent() const
+	FORCEINLINE class UALSCharacterMovementComponent* GetMyMovementComponent() const
 	{
 		return MyCharacterMovementComponent;
 	}
@@ -502,7 +502,7 @@ protected:
 protected:
 	/* Custom movement component*/
 	UPROPERTY()
-	TObjectPtr<UALSCharacterMovementComponentV2> MyCharacterMovementComponent;
+	TObjectPtr<UALSCharacterMovementComponent> MyCharacterMovementComponent;
 
 	/** Input */
 

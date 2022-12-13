@@ -8,6 +8,7 @@
 #include "Character/ALSBaseCharacter.h"
 #include "ALSCharacter.generated.h"
 
+class UALSComponent;
 /**
  * Specialized character class, with additional features like held object etc.
  */
@@ -31,26 +32,22 @@ public:
 	virtual void AttachToHand(UStaticMesh* NewStaticMesh, USkeletalMesh* NewSkeletalMesh,
 	                  class UClass* NewAnimClass, bool bLeftHand, FVector Offset);
 
-	virtual void RagdollStart() override;
-
-	virtual void RagdollEnd() override;
-
-	virtual ECollisionChannel GetThirdPersonTraceParams(FVector& TraceOrigin, float& TraceRadius) override;
-
-	virtual FTransform GetThirdPersonPivotTarget() override;
-
-	virtual FVector GetFirstPersonCameraTarget() override;
-
 protected:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	virtual void OnOverlayStateChanged(EALSOverlayState PreviousState) override;
+	UFUNCTION()
+	void OnRagdollStateChanged(bool bRagdollState);
+
+	UFUNCTION()
+	virtual void OnOverlayStateChanged(FGameplayTag PreviousState);
 
 	/** Implement on BP to update animation states of held objects */
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "ALS|HeldObject")
 	void UpdateHeldObjectAnimations();
+
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ALS|Component")
@@ -64,4 +61,5 @@ public:
 
 private:
 	bool bNeedsColorReset = false;
+
 };

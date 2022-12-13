@@ -5,6 +5,7 @@
 #include "Character/Animation/Notify/ALSNotifyStateOverlayOverride.h"
 
 #include "Character/ALSBaseCharacter.h"
+#include "Character/ALSComponent.h"
 #include "Character/Animation/ALSCharacterAnimInstance.h"
 
 void UALSNotifyStateOverlayOverride::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -12,10 +13,10 @@ void UALSNotifyStateOverlayOverride::NotifyBegin(USkeletalMeshComponent* MeshCom
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 
-	AALSBaseCharacter* Character = Cast<AALSBaseCharacter>(MeshComp->GetOwner());
-	if (Character)
+	UALSComponent* ALSComponent = UALSComponent::FindALSComponent(MeshComp->GetOwner());
+	if (ALSComponent)
 	{
-		Character->SetOverlayOverrideState(OverlayOverrideState);
+		ALSComponent->SetOverlayOverrideState(OverlayOverrideState);
 	}
 }
 
@@ -23,10 +24,10 @@ void UALSNotifyStateOverlayOverride::NotifyEnd(USkeletalMeshComponent* MeshComp,
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	AALSBaseCharacter* Character = Cast<AALSBaseCharacter>(MeshComp->GetOwner());
-	if (Character)
+	UALSComponent* ALSComponent = UALSComponent::FindALSComponent(MeshComp->GetOwner());
+	if (ALSComponent)
 	{
-		Character->SetOverlayOverrideState(0);
+		ALSComponent->SetOverlayOverrideState(0);
 	}
 }
 

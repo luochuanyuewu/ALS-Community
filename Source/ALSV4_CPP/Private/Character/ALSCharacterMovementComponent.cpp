@@ -5,6 +5,7 @@
 #include "Character/ALSCharacterMovementComponent.h"
 
 #include "Curves/CurveVector.h"
+#include "GameFramework/Character.h"
 
 UALSCharacterMovementComponent::UALSCharacterMovementComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -93,7 +94,7 @@ void UALSCharacterMovementComponent::FSavedMove_My::Clear()
 	Super::Clear();
 
 	bSavedRequestMovementSettingsChange = false;
-	SavedAllowedGait = EALSGait::Walking;
+	SavedAllowedGait = FALSGameplayTags::Get().Gait_Walking;
 }
 
 uint8 UALSCharacterMovementComponent::FSavedMove_My::GetCompressedFlags() const
@@ -145,7 +146,7 @@ FSavedMovePtr UALSCharacterMovementComponent::FNetworkPredictionData_Client_My::
 	return MakeShared<FSavedMove_My>();
 }
 
-void UALSCharacterMovementComponent::Server_SetAllowedGait_Implementation(const EALSGait NewAllowedGait)
+void UALSCharacterMovementComponent::Server_SetAllowedGait_Implementation(const FGameplayTag NewAllowedGait)
 {
 	AllowedGait = NewAllowedGait;
 }
@@ -181,7 +182,7 @@ void UALSCharacterMovementComponent::SetMovementSettings(FALSMovementSettings Ne
 	bRequestMovementSettingsChange = true;
 }
 
-void UALSCharacterMovementComponent::SetAllowedGait(EALSGait NewAllowedGait)
+void UALSCharacterMovementComponent::SetAllowedGait(FGameplayTag NewAllowedGait)
 {
 	if (AllowedGait != NewAllowedGait)
 	{

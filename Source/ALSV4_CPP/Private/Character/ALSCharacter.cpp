@@ -6,6 +6,7 @@
 
 #include "Engine/StaticMesh.h"
 #include "AI/ALSAIController.h"
+#include "Character/ALSComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AALSCharacter::AALSCharacter(const FObjectInitializer& ObjectInitializer)
@@ -63,41 +64,9 @@ void AALSCharacter::AttachToHand(UStaticMesh* NewStaticMesh, USkeletalMesh* NewS
 	HeldObjectRoot->SetRelativeLocation(Offset);
 }
 
-void AALSCharacter::RagdollStart()
-{
-	ClearHeldObject();
-	Super::RagdollStart();
-}
 
-void AALSCharacter::RagdollEnd()
+void AALSCharacter::OnOverlayStateChanged(FGameplayTag PreviousState)
 {
-	Super::RagdollEnd();
-	UpdateHeldObject();
-}
-
-ECollisionChannel AALSCharacter::GetThirdPersonTraceParams(FVector& TraceOrigin, float& TraceRadius)
-{
-	const FName CameraSocketName = bRightShoulder ? TEXT("TP_CameraTrace_R") : TEXT("TP_CameraTrace_L");
-	TraceOrigin = GetMesh()->GetSocketLocation(CameraSocketName);
-	TraceRadius = 15.0f;
-	return ECC_Camera;
-}
-
-FTransform AALSCharacter::GetThirdPersonPivotTarget()
-{
-	return FTransform(GetActorRotation(),
-	                  (GetMesh()->GetSocketLocation(TEXT("Head")) + GetMesh()->GetSocketLocation(TEXT("root"))) / 2.0f,
-	                  FVector::OneVector);
-}
-
-FVector AALSCharacter::GetFirstPersonCameraTarget()
-{
-	return GetMesh()->GetSocketLocation(TEXT("FP_Camera"));
-}
-
-void AALSCharacter::OnOverlayStateChanged(EALSOverlayState PreviousState)
-{
-	Super::OnOverlayStateChanged(PreviousState);
 	UpdateHeldObject();
 }
 
@@ -110,7 +79,35 @@ void AALSCharacter::Tick(float DeltaTime)
 
 void AALSCharacter::BeginPlay()
 {
-	Super::BeginPlay();
+	if (UALSComponent* ALSComponent = UALSComponent::FindALSComponent(this))
+	{
+		ALSComponent->RagdollStateChangedDelegate.AddDynamic(this,&ThisClass::OnRagdollStateChanged);
+		ALSComponent->OnOverlayStateChangedEvent.AddDynamic(this, &ThisClass::OnOverlayStateChanged);
+	}
 
+	Super::BeginPlay();
+	
 	UpdateHeldObject();
+}
+
+void AALSCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (UALSComponent* ALSComponent = UALSComponent::FindALSComponent(this))
+	{
+		ALSComponent->RagdollStateChangedDelegate.RemoveDynamic(this,&ThisClass::OnRagdollStateChanged);
+		ALSComponent->OnOverlayStateChangedEvent.RemoveDynamic(this, &ThisClass::OnOverlayStateChanged);
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
+void AALSCharacter::OnRagdollStateChanged(bool bRagdollState)
+{
+	if (bRagdollState)
+	{
+		ClearHeldObject();
+	}else
+	{
+		UpdateHeldObject();
+	}
 }
