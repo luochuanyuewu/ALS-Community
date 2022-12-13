@@ -7,7 +7,6 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
-#include "Library/ALSCharacterEnumLibrary.h"
 
 #include "ALSNotifyStateEarlyBlendOut.generated.h"
 

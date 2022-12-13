@@ -25,12 +25,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FALSJumpedSignature);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FALSBoolStateSignature, bool, bState);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FALSTagChangedSignature,FGameplayTag,Tag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FALSTagChangedSignature, FGameplayTag, Tag);
 
 /*
  * Base advanced locomotion component.
  */
-UCLASS(ClassGroup="ALS", BlueprintType,Blueprintable, meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup="ALS", BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent))
 class ALSV4_CPP_API UALSComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -57,28 +57,28 @@ public:
 
 
 	// should called when character owner startCrouch. TODO ALS
-	UFUNCTION(BlueprintCallable,Category = "ALS")
+	UFUNCTION(BlueprintCallable, Category = "ALS")
 	virtual void OnOwnerCharacterStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust);
 
 	// should called when character owner endCrouch TODO ALS
-	UFUNCTION(BlueprintCallable,Category = "ALS")
+	UFUNCTION(BlueprintCallable, Category = "ALS")
 	virtual void OnOwnerCharacterEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust);
 
 	// should called when character owner Jumped TODO ALS
-	UFUNCTION(BlueprintCallable,Category = "ALS")
+	UFUNCTION(BlueprintCallable, Category = "ALS")
 	virtual void OnOwnerCharacterJumped();
 
 	// should called when character owner Landed TODO ALS
-	UFUNCTION(BlueprintCallable,Category = "ALS")
-	virtual void OnOwnerCharacterLanded(const FHitResult& Hit); 
-	
+	UFUNCTION(BlueprintCallable, Category = "ALS")
+	virtual void OnOwnerCharacterLanded(const FHitResult& Hit);
+
 
 	// virtual void PostInitializeComponents() override;
 
-	
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	ACharacter* GetCharacterOwner() const {return OwnerCharacter;}
+	ACharacter* GetCharacterOwner() const { return OwnerCharacter; }
 
 	/** Ragdoll System */
 
@@ -101,7 +101,7 @@ public:
 	/** Character States */
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void SetMovementState(FGameplayTag NewState, bool bForce = false);
+	void SetMovementState(UPARAM(meta=(Categories="ALS.MovementState")) FGameplayTag NewState, bool bForce = false);
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
 	FGameplayTag GetMovementState() const { return MovementState; }
@@ -110,13 +110,13 @@ public:
 	FGameplayTag GetPrevMovementState() const { return PrevMovementState; }
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void SetMovementAction(FGameplayTag NewAction, bool bForce = false);
+	void SetMovementAction(UPARAM(meta=(Categories="ALS.MovementAction")) FGameplayTag NewAction, bool bForce = false);
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
 	FGameplayTag GetMovementAction() const { return MovementAction; }
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void SetStance(FGameplayTag NewStance, bool bForce = false);
+	void SetStance(UPARAM(meta=(Categories="ALS.Stance")) FGameplayTag NewStance, bool bForce = false);
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
 	FGameplayTag GetStance() const { return Stance; }
@@ -128,7 +128,7 @@ public:
 	int32 GetOverlayOverrideState() const { return OverlayOverrideState; }
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void SetGait(FGameplayTag NewGait, bool bForce = false);
+	void SetGait(UPARAM(meta=(Categories="ALS.Gait")) FGameplayTag NewGait, bool bForce = false);
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
 	FGameplayTag GetGait() const { return Gait; }
@@ -137,31 +137,31 @@ public:
 	FGameplayTag GetDesiredGait() const { return DesiredGait; }
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void SetRotationMode(FGameplayTag NewRotationMode, bool bForce = false);
+	void SetRotationMode(UPARAM(meta=(Categories="ALS.RotationMode")) FGameplayTag NewRotationMode, bool bForce = false);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "ALS|Character States")
-	void Server_SetRotationMode(FGameplayTag NewRotationMode, bool bForce);
+	void Server_SetRotationMode(UPARAM(meta=(Categories="ALS.RotationMode")) FGameplayTag NewRotationMode, bool bForce);
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
 	FGameplayTag GetRotationMode() const { return RotationMode; }
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void SetViewMode(FGameplayTag NewViewMode, bool bForce = false);
+	void SetViewMode(UPARAM(meta=(Categories="ALS.ViewMode")) FGameplayTag NewViewMode, bool bForce = false);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "ALS|Character States")
-	void Server_SetViewMode(FGameplayTag NewViewMode, bool bForce);
+	void Server_SetViewMode(UPARAM(meta=(Categories="ALS.ViewMode")) FGameplayTag NewViewMode, bool bForce);
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
 	FGameplayTag GetViewMode() const { return ViewMode; }
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void SetOverlayState(FGameplayTag NewState, bool bForce = false);
+	void SetOverlayState(UPARAM(meta=(Categories="ALS.OverlayState")) FGameplayTag NewState, bool bForce = false);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void SetGroundedEntryState(FGameplayTag NewState);
+	void SetGroundedEntryState(UPARAM(meta=(Categories="ALS.GroundedEntryState")) FGameplayTag NewState);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "ALS|Character States")
-	void Server_SetOverlayState(FGameplayTag NewState, bool bForce);
+	void Server_SetOverlayState(UPARAM(meta=(Categories="ALS.OverlayState")) FGameplayTag NewState, bool bForce);
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Character States")
 	FGameplayTag GetOverlayState() const { return OverlayState; }
@@ -177,7 +177,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FALSTagChangedSignature OnStanceChangedEvent;
-	
+
 	UPROPERTY(BlueprintAssignable)
 	FALSTagChangedSignature OnRotationModeChangedEvent;
 
@@ -253,25 +253,25 @@ public:
 	FGameplayTag GetDesiredStance() const { return DesiredStance; }
 
 	UFUNCTION(BlueprintSetter, Category = "ALS|Input")
-	void SetDesiredStance(FGameplayTag NewStance);
+	void SetDesiredStance(UPARAM(meta=(Categories="ALS.Stance")) FGameplayTag NewStance);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "ALS|Input")
-	void Server_SetDesiredStance(FGameplayTag NewStance);
+	void Server_SetDesiredStance(UPARAM(meta=(Categories="ALS.Stance")) FGameplayTag NewStance);
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Character States")
-	void SetDesiredGait(FGameplayTag NewGait);
+	void SetDesiredGait(UPARAM(meta=(Categories="ALS.Gait")) FGameplayTag NewGait);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "ALS|Character States")
-	void Server_SetDesiredGait(FGameplayTag NewGait);
+	void Server_SetDesiredGait(UPARAM(meta=(Categories="ALS.Gait")) FGameplayTag NewGait);
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Input")
 	FGameplayTag GetDesiredRotationMode() const { return DesiredRotationMode; }
 
 	UFUNCTION(BlueprintSetter, Category = "ALS|Input")
-	void SetDesiredRotationMode(FGameplayTag NewRotMode);
+	void SetDesiredRotationMode(UPARAM(meta=(Categories="ALS.RotationMode")) FGameplayTag NewRotMode);
 
 	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "ALS|Character States")
-	void Server_SetDesiredRotationMode(FGameplayTag NewRotMode);
+	void Server_SetDesiredRotationMode(UPARAM(meta=(Categories="ALS.RotationMode")) FGameplayTag NewRotMode);
 
 	/** Rotation System */
 
@@ -294,7 +294,7 @@ public:
 
 	//根据移速拿到实际的步态
 	UFUNCTION(BlueprintCallable, Category = "ALS|Movement System")
-	FGameplayTag GetActualGait(FGameplayTag AllowedGait) const;
+	FGameplayTag GetActualGait(UPARAM(meta=(Categories="ALS.Gait")) FGameplayTag AllowedGait) const;
 
 	UFUNCTION(BlueprintCallable, Category = "ALS|Movement System")
 	virtual bool CanSprint() const;
@@ -463,7 +463,7 @@ protected:
 	virtual void OnOverlayStateChanged(FGameplayTag PreviousState);
 
 	virtual void OnVisibleMeshChanged(const USkeletalMesh* PreviousSkeletalMesh);
-	
+
 	void OnLandFrictionReset();
 
 	virtual void SetEssentialValues(float DeltaTime);
@@ -506,13 +506,13 @@ protected:
 
 	/** Input */
 
-	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "ALS|Input")
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "ALS|Input" , meta=(Categories="ALS.RotationMode"))
 	FGameplayTag DesiredRotationMode;
 
-	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "ALS|Input")
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "ALS|Input", meta=(Categories="ALS.Gait"))
 	FGameplayTag DesiredGait;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "ALS|Input")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Category = "ALS|Input", meta=(Categories="ALS.Stance"))
 	FGameplayTag DesiredStance;
 
 	UPROPERTY(EditDefaultsOnly, Category = "ALS|Input", BlueprintReadOnly)
@@ -587,7 +587,7 @@ protected:
 
 	/** State Values */
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|State Values", ReplicatedUsing = OnRep_OverlayState)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ALS|State Values", ReplicatedUsing = OnRep_OverlayState, meta=(Categories="ALS.OverlayState"))
 	FGameplayTag OverlayState;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
@@ -608,10 +608,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")
 	FGameplayTag Gait;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ALS|State Values")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ALS|State Values", meta=(Categories="ALS.Stance"))
 	FGameplayTag Stance;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ALS|State Values", ReplicatedUsing = OnRep_ViewMode)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ALS|State Values", ReplicatedUsing = OnRep_ViewMode, meta=(Categories="ALS.ViewMode"))
 	FGameplayTag ViewMode;
 
 	UPROPERTY(BlueprintReadOnly, Category = "ALS|State Values")

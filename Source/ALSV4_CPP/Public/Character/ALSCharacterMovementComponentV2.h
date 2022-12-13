@@ -73,7 +73,7 @@ class ALSV4_CPP_API UALSCharacterMovementComponentV2 : public UCharacterMovement
 
 	// Set Max Walking Speed (Called from the owning client)
 	UFUNCTION(BlueprintCallable, Category = "Movement Settings")
-	virtual void SetAllowedGait(FGameplayTag NewAllowedGait);
+	virtual void SetAllowedGait(UPARAM(meta=(Categories="ALS.Gait")) FGameplayTag NewAllowedGait);
 
 	UFUNCTION(Reliable, Server, Category = "Movement Settings")
 	void Server_SetAllowedGait(FGameplayTag NewAllowedGait);
