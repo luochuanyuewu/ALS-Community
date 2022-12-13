@@ -78,7 +78,6 @@ void UALSMantleComponent::TimelineFinish()
 	if (MovementState == FALSGameplayTags::Get().MovementState_Mantling)
 	{
 		MantleEnd();
-
 	}
 }
 

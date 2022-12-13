@@ -113,7 +113,7 @@ void UALSComponent::BeginPlay()
 	OwnerCharacter->GetMesh()->AddTickPrerequisiteActor(OwnerCharacter);
 
 	// Set the Movement Model
-	SetMovementModel();
+	SetMovementModel(MovementModel);
 
 	// Force update states to use the initial desired values.
 	ForceUpdateCharacterState();
@@ -557,11 +557,11 @@ void UALSComponent::SetActorLocationAndTargetRotation(FVector NewLocation, FRota
 	TargetRotation = NewRotation;
 }
 
-void UALSComponent::SetMovementModel()
+void UALSComponent::SetMovementModel(const FDataTableRowHandle& InModel)
 {
 	const FString ContextString = GetFullName();
 	FALSMovementStateSettings* OutRow =
-		MovementModel.DataTable->FindRow<FALSMovementStateSettings>(MovementModel.RowName, ContextString);
+		InModel.DataTable->FindRow<FALSMovementStateSettings>(InModel.RowName, ContextString);
 	check(OutRow);
 	MovementData = *OutRow;
 }

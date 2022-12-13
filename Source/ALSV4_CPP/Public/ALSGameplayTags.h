@@ -44,6 +44,9 @@ public:
 	FGameplayTag MovementState_InAir;
 	FGameplayTag MovementState_Mantling;
 	FGameplayTag MovementState_Ragdoll;
+	FGameplayTag MovementState_Riding;
+	FGameplayTag MovementState_Vaulting;
+	FGameplayTag MovementState_Climbing;
 
 	FGameplayTag MovementAction_None;
 	FGameplayTag MovementAction_LowMantle;

@@ -35,6 +35,10 @@ void FALSGameplayTags::AddTags()
 	AddTag(MovementState_InAir, "ALS.MovementState.InAir", "");
 	AddTag(MovementState_Mantling, "ALS.MovementState.Mantling", "");
 	AddTag(MovementState_Ragdoll, "ALS.MovementState.Ragdoll", "");
+	AddTag(MovementState_Riding, "ALS.MovementState.Riding", "");
+	AddTag(MovementState_Vaulting, "ALS.MovementState.Vaulting", "");
+	AddTag(MovementState_Climbing, "ALS.MovementState.Climbing", "");
+
 
 	AddTag(MovementAction_None, "ALS.MovementAction.None", "");
 	AddTag(MovementAction_LowMantle, "ALS.MovementAction.LowMantle", "");

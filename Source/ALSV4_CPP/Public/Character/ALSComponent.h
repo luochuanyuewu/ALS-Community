@@ -13,6 +13,7 @@
 #include "ALSComponent.generated.h"
 
 
+class UALSCharacterMovementComponent;
 // forward declarations
 class UALSDebugComponent;
 class UAnimMontage;
@@ -37,13 +38,7 @@ class ALSV4_CPP_API UALSComponent : public UActorComponent
 
 public:
 	UALSComponent(const FObjectInitializer& ObjectInitializer);
-
-	UFUNCTION(BlueprintCallable, Category = "ALS|Movement")
-	FORCEINLINE class UALSCharacterMovementComponent* GetMyMovementComponent() const
-	{
-		return MyCharacterMovementComponent;
-	}
-
+	
 	UFUNCTION(BlueprintCallable, Category = "ALS")
 	static UALSComponent* FindALSComponent(const AActor* Actor);
 
@@ -356,10 +351,19 @@ public:
 	FVector GetMovementInput() const;
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Essential Information")
+	FRotator GetLastVelocityRotation() const { return LastVelocityRotation; }
+
+	UFUNCTION(BlueprintGetter, Category = "ALS|Essential Information")
+	FRotator GetLastMovementInputRotation() const { return LastMovementInputRotation; }
+
+	UFUNCTION(BlueprintGetter, Category = "ALS|Essential Information")
 	float GetMovementInputAmount() const { return MovementInputAmount; }
 
 	UFUNCTION(BlueprintGetter, Category = "ALS|Essential Information")
 	float GetSpeed() const { return Speed; }
+
+	UFUNCTION(BlueprintGetter, Category = "ALS|Essential Information")
+	bool GetIsMoving() const { return bIsMoving; }
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "ALS|Essential Information")
 	FRotator GetAimingRotation() const;
@@ -437,6 +441,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = "ALS|Essential Information")
 	FRotator ReplicatedControlRotation = FRotator::ZeroRotator;
 
+
+	virtual void SetMovementModel(const FDataTableRowHandle& InModel);
+
 protected:
 	/** Ragdoll System */
 
@@ -481,9 +488,7 @@ protected:
 	virtual float CalculateGroundedRotationRate() const;
 
 	void LimitRotation(float AimYawMin, float AimYawMax, float InterpSpeed, float DeltaTime);
-
-	virtual void SetMovementModel();
-
+	
 	void ForceUpdateCharacterState();
 
 	/** Replication */
