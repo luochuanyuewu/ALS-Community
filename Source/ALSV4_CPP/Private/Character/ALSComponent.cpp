@@ -1196,7 +1196,10 @@ FGameplayTag UALSComponent::GetActualGait(FGameplayTag AllowedGait) const
 	// Get the Actual Gait. This is calculated by the actual movement of the character,  and so it can be different
 	// from the desired gait or allowed gait. For instance, if the Allowed Gait becomes walking,
 	// the Actual gait will still be running until the character decelerates to the walking speed.
-
+	if (!MyCharacterMovementComponent)
+	{
+		return FALSGameplayTags::Get().Gait_Walking;
+	}
 	const float LocWalkSpeed = MyCharacterMovementComponent->CurrentMovementSettings.WalkSpeed;
 	const float LocRunSpeed = MyCharacterMovementComponent->CurrentMovementSettings.RunSpeed;
 

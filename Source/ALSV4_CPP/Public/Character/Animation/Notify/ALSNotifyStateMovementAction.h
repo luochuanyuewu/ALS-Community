@@ -29,8 +29,8 @@ class ALSV4_CPP_API UALSNotifyStateMovementAction : public UAnimNotifyState
 	virtual FString GetNotifyName_Implementation() const override;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify)
-	EALSMovementAction MovementAction = EALSMovementAction::None;
+	// UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AnimNotify)
+	// EALSMovementAction MovementAction = EALSMovementAction::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimNotify, meta=(Categories="ALS.MovementAction"))
 	FGameplayTag MovementActionTag = FALSGameplayTags::Get().MovementAction_None;

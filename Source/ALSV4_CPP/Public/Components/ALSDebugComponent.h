@@ -13,7 +13,7 @@ class UALSComponent;
 class ACharacter;
 class USkeletalMesh;
 
-UCLASS(Blueprintable, BlueprintType)
+UCLASS(ClassGroup=ALS,Blueprintable, BlueprintType)
 class ALSV4_CPP_API UALSDebugComponent : public UActorComponent
 {
 	GENERATED_BODY()

@@ -33,6 +33,10 @@ void UALSNotifyStateMovementAction::NotifyEnd(USkeletalMeshComponent* MeshComp, 
 FString UALSNotifyStateMovementAction::GetNotifyName_Implementation() const
 {
 	FString Name(TEXT("Movement Action: "));
-	Name.Append(GetEnumerationToString(MovementAction));
+
+	FString DisplayName = MovementActionTag.ToString();
+	DisplayName.RemoveFromStart(TEXT("ALS.MovementAction."));
+
+	Name.Append(DisplayName);
 	return Name;
 }

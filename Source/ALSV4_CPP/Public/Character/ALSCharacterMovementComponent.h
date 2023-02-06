@@ -14,7 +14,7 @@
 /**
  * Authoritative networked Character Movement
  */
-UCLASS()
+UCLASS(ClassGroup=ALS)
 class ALSV4_CPP_API UALSCharacterMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_UCLASS_BODY()

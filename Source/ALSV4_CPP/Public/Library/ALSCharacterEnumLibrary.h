@@ -24,18 +24,18 @@ static FORCEINLINE FString GetEnumerationToString(const Enumeration InValue)
 /**
  * Character gait state. Note: Also edit related struct in ALSStructEnumLibrary if you add new enums
  */
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EALSGait : uint8
 {
 	Walking,
 	Running,
 	Sprinting
-};
+};*/
 
 /**
  * Character movement action state. Note: Also edit related struct in ALSStructEnumLibrary if you add new enums
  */
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EALSMovementAction : uint8
 {
 	None,
@@ -43,12 +43,12 @@ enum class EALSMovementAction : uint8
 	HighMantle,
 	Rolling,
 	GettingUp
-};
+};*/
 
 /**
  * Character movement state. Note: Also edit related struct in ALSStructEnumLibrary if you add new enums
  */
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EALSMovementState : uint8
 {
 	None,
@@ -60,12 +60,12 @@ enum class EALSMovementState : uint8
 	Vaulting UMETA(DisplayName="Vaulting(翻越)"),
 	Riding UMETA(DisplayName = "Riding(骑马)"),
 	Climbing UMETA(DisplayName = "Climbing(攀爬)"),
-};
+};*/
 
 /**
  * Character overlay state. Note: Also edit related struct in ALSStructEnumLibrary if you add new enums
  */
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EALSOverlayState : uint8
 {
 	Default,
@@ -82,46 +82,46 @@ enum class EALSOverlayState : uint8
 	Box,
 	Barrel,
 	Normal
-};
+};*/
 
 /**
  * Character rotation mode. Note: Also edit related struct in ALSStructEnumLibrary if you add new enums
  */
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EALSRotationMode : uint8
 {
 	VelocityDirection,
 	LookingDirection,
 	Aiming
-};
+};*/
 
 /**
  * Character stance. Note: Also edit related struct in ALSStructEnumLibrary if you add new enums
  */
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EALSStance : uint8
 {
 	Standing,
 	Crouching
-};
+};*/
 
 /**
  * Character view mode. Note: Also edit related struct in ALSStructEnumLibrary if you add new enums
  */
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EALSViewMode : uint8
 {
 	ThirdPerson,
 	FirstPerson
-};
+};*/
 
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EALSAnimFeatureExample : uint8
 {
 	StrideBlending,
 	AdditiveBlending,
 	SprintImpulse
-};
+};*/
 
 UENUM(BlueprintType)
 enum class EALSFootstepType : uint8
@@ -132,12 +132,12 @@ enum class EALSFootstepType : uint8
 	Land
 };
 
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EALSGroundedEntryState : uint8
 {
 	None,
 	Roll
-};
+};*/
 
 UENUM(BlueprintType)
 enum class EALSHipsDirection : uint8

@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "Character/ALSComponent.h"
-#include "Character/Animation/ALSPlayerCameraBehaviorV2.h"
+#include "Character/Animation/ALSPlayerCameraBehavior.h"
 #include "GameFramework/Character.h"
 
 bool UALSDebugComponent::bDebugView = false;
@@ -179,7 +179,7 @@ void UALSDebugComponent::ToggleDebugView()
 		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	if (CamManager)
 	{
-		UALSPlayerCameraBehaviorV2* CameraBehavior = Cast<UALSPlayerCameraBehaviorV2>(
+		UALSPlayerCameraBehavior* CameraBehavior = Cast<UALSPlayerCameraBehavior>(
 			CamManager->CameraBehavior->GetAnimInstance());
 		if (CameraBehavior)
 		{

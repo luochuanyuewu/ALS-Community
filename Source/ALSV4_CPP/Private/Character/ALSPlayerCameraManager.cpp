@@ -6,7 +6,6 @@
 #include "Character/ALSComponent.h"
 #include "Character/ALSPlayerController.h"
 #include "Character/Animation/ALSPlayerCameraBehavior.h"
-#include "Character/Animation/ALSPlayerCameraBehaviorV2.h"
 #include "Components/ALSDebugComponent.h"
 
 #include "Kismet/KismetMathLibrary.h"
@@ -43,7 +42,7 @@ void AALSPlayerCameraManager::OnPossess(ACharacter* NewCharacter)
 	check(ALSComponent)
 
 	// Update references in the Camera Behavior AnimBP.
-	UALSPlayerCameraBehaviorV2* CastedBehv = Cast<UALSPlayerCameraBehaviorV2>(CameraBehavior->GetAnimInstance());
+	UALSPlayerCameraBehavior* CastedBehv = Cast<UALSPlayerCameraBehavior>(CameraBehavior->GetAnimInstance());
 	if (CastedBehv)
 	{
 		CastedBehv->MovementState = ALSComponent->GetMovementState();

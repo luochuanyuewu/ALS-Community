@@ -280,7 +280,7 @@ struct FALSMovementSettings
 	UPROPERTY(EditAnywhere, Category = "Movement Settings")
 	TObjectPtr<UCurveFloat> RotationRateCurve = nullptr;
 
-	float GetSpeedForGait(const EALSGait Gait) const
+	/*float GetSpeedForGait(const EALSGait Gait) const
 	{
 		switch (Gait)
 		{
@@ -293,7 +293,7 @@ struct FALSMovementSettings
 		default:
 			return RunSpeed;
 		}
-	}
+	}*/
 
 	float GetSpeedForGait(const FGameplayTag Gait) const
 	{
