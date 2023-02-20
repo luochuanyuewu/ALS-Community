@@ -38,9 +38,12 @@ class ALSV4_CPP_API UALSComponent : public UActorComponent
 
 public:
 	UALSComponent(const FObjectInitializer& ObjectInitializer);
-	
-	UFUNCTION(BlueprintCallable, Category = "ALS")
+
+	UFUNCTION(BlueprintPure, Category = "ALS")
 	static UALSComponent* FindALSComponent(const AActor* Actor);
+
+	UFUNCTION(BlueprintCallable, Category = "ALS", meta=(DisplayName="Find ALSComponent", ExpandBoolAsExecs = "ReturnValue"))
+	static bool K2_FindALSComponent(const AActor* Actor, UALSComponent*& Instance);
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -488,7 +491,7 @@ protected:
 	virtual float CalculateGroundedRotationRate() const;
 
 	void LimitRotation(float AimYawMin, float AimYawMax, float InterpSpeed, float DeltaTime);
-	
+
 	void ForceUpdateCharacterState();
 
 	/** Replication */
@@ -511,7 +514,7 @@ protected:
 
 	/** Input */
 
-	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "ALS|Input" , meta=(Categories="ALS.RotationMode"))
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "ALS|Input", meta=(Categories="ALS.RotationMode"))
 	FGameplayTag DesiredRotationMode;
 
 	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "ALS|Input", meta=(Categories="ALS.Gait"))

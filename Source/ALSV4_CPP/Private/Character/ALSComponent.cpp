@@ -171,6 +171,14 @@ UALSComponent* UALSComponent::FindALSComponent(const AActor* Actor)
 	return Actor != nullptr ? Actor->FindComponentByClass<UALSComponent>():nullptr;
 }
 
+bool UALSComponent::K2_FindALSComponent(const AActor* Actor, UALSComponent*& Instance)
+{
+	if (Actor == nullptr)
+		return false;
+	Instance = FindALSComponent(Actor);
+	return Instance != nullptr;
+}
+
 void UALSComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
