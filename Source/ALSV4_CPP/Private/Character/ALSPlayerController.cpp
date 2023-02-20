@@ -40,6 +40,8 @@ void AALSPlayerController::OnRep_Pawn()
 	SetupCamera();
 	SetupInputs();
 
+	if (!PossessedCharacter) return;
+
 	UALSDebugComponent* DebugComp = Cast<UALSDebugComponent>(PossessedCharacter->GetComponentByClass(UALSDebugComponent::StaticClass()));
 	if (DebugComp)
 	{

@@ -1511,7 +1511,7 @@ void UALSComponent::OnRep_OverlayState(FGameplayTag PrevOverlayState)
 
 }
 
-void UALSComponent::OnRep_VisibleMesh(USkeletalMesh* NewVisibleMesh)
+void UALSComponent::OnRep_VisibleMesh(const USkeletalMesh* PreviousSkeletalMesh)
 {
 	OnVisibleMeshChanged(NewVisibleMesh);
 }
